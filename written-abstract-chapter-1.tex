@@ -1,0 +1,234 @@
+\documentclass[11pt]{article}
+\usepackage[margin=2.5cm]{geometry}
+
+%Times New Roman
+\usepackage{mathptmx}
+\usepackage[T1]{fontenc}
+
+%For including graphics
+\usepackage{graphicx}
+
+%For having theorem-environments etc.
+\usepackage{amsthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+\newtheorem{example}{Example}
+
+%For urls
+\usepackage{url}
+
+\title{Introduction to Model Checking\\\small Written Abstract for the Seminar ``Recent Advances in Model Checking''}
+\author{Maximilian Weininger}
+\date{}
+
+\begin{document}
+% Throughout the document, you will find comments which give some insights on why I do some things the way I do them. 
+
+\maketitle	
+
+\vspace{-2.5em}
+% Dirty tricks for making it fit into 4 pages: negative vertical space. 
+% Don't overdo it, everything should be readable.
+\section*{Organizational information}
+% You need not use the same headings that I chose for this abstract. I felt that it works well for the story which I want to tell.
+% Note however that you written abstract should contain elements of all of my sections, i.e. 
+% - organization of the abstract and relation to the talk
+% - motivation of why the others should care
+% - formalities that you plan to use in your talk
+% - an outlook of what to expect in your talk 
+% - if possible, a paragraph on the relation to (some of) the other talks
+
+This abstract is based on Chapter 1 of the Handbook of Model Checking~\cite{handbook}.
+Section~\ref{sec:intro} first introduces and motivates model checking, building on ~\cite[Chapter 1.1]{handbook}.
+Section~\ref{sec:prelims} gives some formal definitions from ~\cite[Chapter 1.2.1 and 1.2.4]{handbook} which are required for the presentation.
+Finally, Section~\ref{sec:outlook} provides and outlook for the presentation, which will mainly categorize the other chapters of the handbook as done in ~\cite[Chapter 1.3]{handbook}.
+% Note that I did not include the whole chapter, but instead only focus on a few things. There is way too much content even in this short chapter.
+% Also note that by this organizational information, I don't have to cite the handbook anymore in the remaining abstract, since it is clear that my information is based on it.
+
+\section{Introduction}\label{sec:intro}
+
+\paragraph{Motivation.}
+Our modern world relies on the usage of computer programs. They are crucial for essentially all areas of our lives, including but not limited to ``production, transportation, infrastructure, health care, science, finance, administration, defense, and entertainment''~\cite[Page 2]{handbook}.
+They perform tasks that, if done wrongly, can cost not only enourmous amounts of money, but even human lives, see also~\cite[Chapter 1]{BK08}.
+Thus, it is necessary for these computer programs to be \emph{verified}.
+% I cited the handbook here, since I wanted to verbatim copy this sentence. While my story is different from the one they tell (where they focus on the history of proving things about programs), this particular part was too perfect to rewrite it in my opinion.
+
+What does verified mean?
+In this abstract, we understand it as \emph{behaving according to the given specification}.
+This specification can have various forms, many of which are discussed throughout the Handbook.
+We provide an illustrative motivational example. 
+When a computer controlled agent (be it an autonomous car of a factory robot) is performing a navigational task (i.e.\ it is moving around), its specification should contain the following two objectives: firstly, it should be \emph{safe}, which means it should not move into obstacles such as walls or humans; secondly, it should eventually \emph{reach} its destination and not be stuck moving in an endless cycle.
+We will reuse the example of a robot navigating an environment throughout the abstract.
+% Technical notes (things you can do to make your stuff look better if you use tex): 
+% I put a ~ before citations. This is a non-breaking space, which prevents the citation from appearing at the beginning of a new line, which looks ugly. 
+% I put a \ before the space after i.e. This is because tex uses different rules for spacing after dots than it normally does. Hence, just putting "i.e." would have a bigger space after the dot than using "i.e.\ ", which tells tex that this is just a normal (escaped) space.
+% I do not use normal quotations ". These look ugly. Instead, I use `` for opening and '' for closing.
+
+\paragraph{Model checking.}
+To ensure that the agent satisfies this specification, we can employ the classical and powerful approach of \emph{model checking}.
+The model checking paradigm is illustrated in Figure~\ref{fig:mc-paradigm}.
+The core idea is to construct a formal model of the \textbf{system} $K$ and the \textbf{specification} $\phi$.
+In our example, the system model should contain all possible behaviours of the computer controlled agent, while the specification should describe the two requirements of being safe and reaching the destination.
+Then, a model checking \textbf{algorithm} is employed to check whether the system satisfies the specification (denoted as $K \models \phi$). 
+The result is either a mathematical proof that the system indeed behaves as specified, or a counterexample demonstrating how the specification can be violated.
+
+% Side note: If you want to find a symbol, but do not know how it is called in LaTeX, you can use https://detexify.kirelabs.org/classify.html
+% I had to do this, because I didn't remember the LaTeX-name of the $\models$ symbol.
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=0.5\textwidth]{handbook-mc-fig1.png}
+	\caption{Illustration of the model checking paradigm. Figure taken from~\cite[Figure 1]{handbook}.}
+	% Important: Reference figure source in the caption!
+	\label{fig:mc-paradigm}
+\end{figure}
+
+\medskip
+In Section~\ref{sec:prelims}, we define concrete formalisms for system and specification, namely Kripke structure and formula in linear temporal logic, respectively. Further, we recall the key result that for this combination, model checking algorithms exist.
+However, there are many other more expressive formalisms that have to be employed in certain settings.
+This is why we speak of the model checking \emph{paradigm}: it is a way of thinking, a way of approaching manifold problems and finding solutions to them.
+It is not restricted to Kripke structures and linear temporal logic, but in fact there are various ways of instantiating the model checking paradigm with more powerful formalisms.
+Such formalisms as well as the required algorithms are the content of my presentation and outlined in Section~\ref{sec:outlook}.
+
+% Note that this duplicates content with the organizational information at the beginning. However, the paragraphs have different purpose: While the organizational paragraph mainly clarifies the relation to the handbook and talks about all sections, this one gives the reader the outline of the rest of the abstract, based on the understanding they have obtained from reading my introduction. Thus, I consider it ok to duplicate some information.
+
+% Side note: Usage of first person
+% German schools often teach to never use "I" or "We" when writing. 
+% It is suggested that to avoid first person, the passive voice can be used when speaking about things that were done by the author.
+% According to my experience writing more than 20 research papers and reading hundreds, this is complete nonsense.
+% Style guides advise against use of passive voice whenever possible.
+
+% I want to clarify how I differentiate between "I" and "We".
+% When using "we", I understand it as a "you, the reader, and me, the author". For example, when writing "we define Kripke structures", this is meant as a "When you read it, we will go through the definition together." 
+% This is a stylistic choice I make, and you are free to do it differently.
+% Also, I usually work in groups, and the we also includes the other authors. This is standard, so much so that even papers with a single author write "we".
+% I use "I" only in the very few cases where I really talk about something that *I* do, like actually giving my presentation or giving my opinion on the usage of first person pronouns.
+
+\section{Preliminaries}\label{sec:prelims}
+
+\subsection{System: Kripke structures}
+
+\begin{definition}
+	% Note that I slightly rephrased their definition to be more concise.
+	A \emph{Kripke structure} over a set of atomic propositions $A$ is a tuple $K = (S, R, L)$, where $S$ is a finite set of states, $R \subseteq S\times S$ is a set of transitions and $L\colon S \to 2^A$ is the labeling function.
+\end{definition}
+
+\begin{example}\label{ex:kripke}
+	% In my opinion, examples are crucial for this abstract. If you just give definitions, your readers have to invest a lot of effort and still are unlikely to understand everything you care about.
+	% By giving examples, you make it easier for the reader while also directing attention to the things you care about.
+	We exemplify all parts of the definition on the example from the introduction which is illustrated\footnote{Image built using three license-free pictures. Sources: \url{https://de.freepik.com/vektoren-premium/netter-roboter-der-hand-cartoon-illustration-winkt_12853813.htm}, \url{https://de.freepik.com/vektoren-premium/strassensperre-dargestellt_26561729.htm}, \url{https://de.freepik.com/vektoren-kostenlos/ort_2900811.htm}.} in Figure~\ref{fig:kripke-example}.
+	The state space $S$ contains a description of all possible configurations the system can be in. 
+	Concretely, in our example we abstract the environment of the agent as a two-dimensional grid. Then there is a state for every cell of the grid, and hence the state describes the current position of the agent. Formally, we have $S = \{(0,0),~(0,1),~(1,0),~(1,1)\}$.
+%	Note that a state is not limited to describing the physical position of the agent, but it includes all the information necessary to understand the current configuration of the system. 
+	The transition relation $R$ contains all possible ways in which the system can evolve. For example, if the agent currently is in state $s=(0,0)$ (at the origin of the grid), its actions are to move to $p=(1,0)$ or $q=(0,1)$.
+	This is modelled by having $\{(s,p), (s,q)\} \subseteq R$, i.e.\ by having these two possible state transitions inside the transition relation.
+	Note that in our example all transitions are symmetric, so we also have $\{(p,s), (q,s)\} \subseteq R$.
+	The labeling function $L$ depends on the set of atomic propositions $A$. These propositions describe relevant properties of system states. 
+	In our example, we have $A = \{o,d\}$, i.e.\ there are two atomic propositions $o$, indicating an obstacle, and $d$, indicating the destination.
+	The labeling function tells us that at position $(0,1)$ there is an obstacle and state $(1,1)$ is the destination. Formally, we have $L((0,1)) = \{o\}$ and $L((1,1)) = \{d\}$. Note that for the other states, the labeling is empty, i.e.\ $L((0,0))=L((1,0))=\emptyset$.	
+\end{example}
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=0.5\textwidth]{example}
+	\caption{Example of a system modelled as a Kripke structure. See Example~\ref{ex:kripke} for a description.}
+	\label{fig:kripke-example}
+\end{figure}
+
+
+The dynamic behaviour of the system modelled as a Kripke structure is formalized by means of \emph{paths}.
+A path is a finite or infinite sequence of states, formally $\pi = s_0, s_1, s_2, \ldots$ with $(s_i,s_{i+1}) \in R$ for all $i\geq 0$.
+
+
+\subsection{Specification: Linear temporal logic}
+
+\begin{definition}
+	% I didn't have space for this definition, but anyway I only need a high-level understanding of it.
+	Linear temporal logic (LTL) is a propositional logic over a set of atomic propositions $A$. It is interpreted over paths.
+	LTL-formulas are defined recursively:
+	every $a \in A$ is a formula in LTL; if $\phi$ and $\psi$ are LTL-formulas, so are $\neg \phi$, $\phi \wedge \psi$, $\mathbf{F} \phi$ and $\mathbf{G} \phi$.
+\end{definition}
+
+A complete definition of LTL is not required for the purpose of this abstract and the presentation. We refer the interested reader to~\cite[Chapter 2.3.1]{handbook}. 
+Here, it suffices to understand what it means to be a logic interpreted over paths and the meaning of the temporal operators $\mathbf F$ and $\mathbf G$.
+We will explain these things by means of our running example.
+
+\begin{example}
+	For the sake of readability, we rename the states of our running example as follows:
+	$s=(0,0)$, $p=(1,0)$, $q=(0,1)$, $r=(1,1)$.
+	% I could have done this before, but wanted to keep the more evocative names with the coordinates for (most of) the other example.
+	A path in our running example is a sequence of grid positions.
+	For example, if the robot is always alternating between state $s$ and $p$, this corresponds to the infinite path $\pi_1 = (s,p)^\omega = s,p,s,p,\ldots$.
+	To illustrate all relevant concepts, we define two further paths:
+	$\pi_2 = s,p,r,(p,r)^\omega$ goes to the destination while avoiding the obstacle and then alternates between states $p$ and $r$.
+	$\pi_3 = s,q,r,(p,r)^\omega$ is very similar, only differing in that it goes to the destination over the state $q$ which contains the obstacle.
+	
+	Intuitively, we want to formalize the fact that $\pi_2$ is the path we want, because it reaches the destination while avoiding the obstacle. 
+	$\pi_1$ is suboptimal because it never reaches the destination; and $\pi_3$ because it hits the obstacle.
+	To formalize this, we will specify an LTL-formula that is satisfied by $\pi_2$, but not by $\pi_1$ or $\pi_3$.
+	
+	The first part of the specification requires us to reach the destination. This can be encoded by the LTL-formula $\mathbf F d$, where $d \in A$ is the atomic proposition labeling the destination and $\mathbf F$ is the so-called \emph{future} temporal operator.
+	A path $\pi$ satisfies an LTL-formula $\mathbf F \phi$, if at some point in the path $\phi$ is satisfied.
+	Since $\pi_2$ contains $r$ and since $L(r)=\{d\}$, we have that $\pi_2 \models \mathbf F d$. Similarly, $\pi_3\models \mathbf F d$, but $\pi_1\not\models\mathbf F d$.
+	
+	The second part of the specification prescribes that we have to avoid the obstacle. The LTL-formula $\mathbf G \neg o$ formalizes this, where $\mathbf G$ is the so-called \emph{globally} temporal operator.
+	A path $\pi$ satisfies an LTL-formula $\mathbf G \phi$, if at all positions in the path $\phi$ is satisfied.
+	Hence, $\mathbf G \neg o$ is satisfied by a path $\pi$ if and only if for all states $x$ in the path $\pi$ we have $o \notin L(x)$.
+	Thus, it holds that $\pi_2 \models \mathbf G \neg o$ as well as $\pi_1 \models \mathbf G \neg o$, but $\pi_3 \not\models \mathbf G \neg o$, because state $q$ is contained in $\pi_3$ and $L(q)=\{o\}$.
+		
+	In summary, our specification can be encoded as the LTL-formula $(\mathbf F d) \wedge (\mathbf G \neg o)$.	
+\end{example}
+
+
+\subsection{Model checking algorithms}
+
+Given a system in the form of a Kripke structure and a specification formalized as an LTL-formula, we can check whether the system satisfies the specification. 
+Formally, this amounts to verifying that all paths in the Kripke structure satisfy the LTL-formula. There exist efficient algorithms for that, which utilize the fact that a path violating the LTL-formula must have a specific structure and exploiting the relationship of LTL and automata over infinite words~\cite[Theorem 2]{handbook}.
+
+Note that in our running example, not all paths satisfy the specification. This means that there are ways in which the system can violate our expectation and either hit the obstacle or avoid the destination.
+This tells us that the robot is ``wrong'' and we need to do something about it.
+One possibility is to synthesize a controller for the robot that only selects certain transitions in every state, namely those that are safe with respect to the property. For example, we can remove all transitions towards the obstacle $(0,1)$ as well as the transition back to the starting state $((1,0),(0,0))$. 
+The resulting Kripke structure satisfies the objective, since no path in it can reach the obstacle and every path has to reach the destination. 
+Now, the robot is verified to behave as expected.
+
+
+\section{Outlook}\label{sec:outlook}
+
+We have just seen the basic model checking paradigm: verifying that a system satisfies a specification by applying a sophisticated algorithm. This basic setting is elaborated in Chapters 2-5.
+There are two main directions of research that extend this, focusing either on the \emph{modeling challenge} or the \emph{algorithmic challenge}.
+
+\paragraph{The modeling challenge.}
+The real world is complex and we need the formalisms we use to describe it to be expressive enough so that they capture all relevant properties.
+Thus, we can extend the systems to include
+\begin{itemize}
+	\item an unbounded number of parallel processes (Chapter 21).
+	\item non-finite state concepts such as nonces and keys in security protocols (Chapter 22). 
+	\item multiple actors with conflicting goals. This also lays the basis for controller synthesis (Chapter 27).
+	\item uncertainties, e.g.\ for modeling randomness required in privacy protocols or abstracting probabilistic events such as sensor faults or biological processes (Chapter 28).
+	\item continuous state-variables, such as time (Chapter 29) or, in the case of cyber-physical systems, temperature or velocity (Chapter 30). 
+\end{itemize}
+
+
+
+\paragraph{The algorithmic challenge.}
+At the core of model checking are efficient algorithms, be it for the basic problems or the ones with more expressive models.
+In particular, we have to deal with the state-space explosion problem~\cite[Chapter 2.3]{BK08} (also known as curse of dimensionality). 
+The presentation will explain this in more detail, but the key issue is that the systems we want to model check are very, \emph{very} large, and hence the basic idea of smartly exploring the needed parts of the state-space (Chapter 5) is often infeasible because of the required memory.
+
+There are algorithmic methods for mitigating this problem, which can roughly be classified as follows:
+\begin{itemize}
+	\item Structural methods try to reduce the size of the state-space we have to consider by using (i) partial-order reduction, essentially grouping equivalent parts together; or (ii) compositional reasoning, which allows to reason about the smaller components of the system and lift the resulting insights to the whole system (Chapters 12, 17, 18).
+	\item Symbolic methods represent the system in a more concise way than by remembering every state and transition explicitly. By exploiting properties of the used data structures, the required memory and model checking time decreases drastically. Symbolic methods can use Binary Decision Diagrams (Chapters 7 and 8) or rely on SAT or SMT encodings (Chapters 9, 10, 11).
+	\item Abstraction (Chapters 13-15) tries to reduce a system to a smaller, homomorphic image so that the key properties of the original system are retained in the abstraction.
+\end{itemize}
+
+In the presentation, I will provide more details on the challenges and the ways in which the chapters of the handbook address them.
+For deciding which chapters you want to present, I also recommend reading~\cite[Chapter 1.3]{handbook} as well as abstracts of the chapters you are most interested in.
+
+
+\bibliographystyle{alpha}
+\bibliography{ref}
+% You are not required to have more sources than the handbook, but you can. If you do so, check with your supervisor that the focus of your abstract/talk still makes sense.
+
+
+\end{document}
