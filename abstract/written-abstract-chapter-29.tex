@@ -2,6 +2,11 @@
 \usepackage[margin=2.5cm]{geometry}
 \usepackage{graphicx, hyperref}
 \usepackage{amsthm, amsmath, amssymb}
+
+\geometry{
+	top=1.5cm,
+}
+
 \newtheorem{theorem}{Theorem}
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}
@@ -32,17 +37,20 @@
 % - an outlook of what to expect in your talk 
 % - if possible, a paragraph on the relation to (some of) the other talks
 This abstract is based on Chapter 29 of the Handbook of Model Checking~\cite{handbook}.
-Section~\ref{sec:intro} first introduces and motivates model checking applied to real-time systems, building on~\cite[Chapter~29.1]{handbook}.
-Section~\ref{sec:ta} gives some formal definitions from ~\cite[Chapter 29.2]{handbook} about timed-automata and related notions.
+Section~\ref{sec:intro} first introduces and motivates model checking applied to real-time systems, building on~\cite[Chapters~29.1 and 29.2]{handbook}.
+Section~\ref{sec:ta} gives some formal definitions from ~\cite[Chapter~29.2]{handbook} about timed-automata and related notions.
 
 $\cdots$
 
 \section{Introduction}\label{sec:intro}
+The most basic problem regarding timed automata is reachability, i.e.\ given a timed automaton $\mathcal{A}$, is a set of locations $F$ of $\mathcal{A}$ reachable or not.
+
 $\cdots$
 
 \section{Timed Automata}\label{sec:ta}
 \paragraph{Preliminaries}\label{par:prelims}
-In this chapter, time values are equated with non-negative real numbers of $\mathbb{R}_{\geq 0}$. A \emph{time sequence} is a finite or infinite non-decreasing sequence of time values. A \emph{timed word} over $\Sigma \times \mathbb{R}_{\geq 0}$ is a word over the alphabet $\Sigma$ sequentially paired with a time sequence. If the time sequence of a timed word is upper-bounded or converging, the timed word is said to be \emph{converging}.
+In this chapter, time values are equated with non-negative real numbers of $\mathbb{R}_{\geq 0}$. A \emph{time sequence} is a finite or infinite non-decreasing sequence of time values. A \emph{timed word} over $\Sigma \times \mathbb{R}_{\geq 0}$ is a word over the alphabet $\Sigma$ sequentially paired with a time sequence.
+If the time sequence of a timed word is upper-bounded or converging, the timed word is said to be \emph{converging} and \emph{divergent} otherwise.
 
 Let $C$ be a finite set of variables called \emph{clocks}. A \emph{valuation} over $C$ is a mapping $v \colon C \to \mathbb{R}_{\geq 0}$. The set of valuations over $C$ is denoted $\mathbb{R}_{\geq 0}^C$ and $\text{\bf 0}_C$ denoted the valuation assigning 0 to every clock of C.
 
@@ -62,14 +70,13 @@ We say that a valuation $v$ over $C$ satisfies $x \odot k$ when $v(x) \odot k$, 
 A timed automaton is basically a finite automaton with (real-time) constraints on the states.
 The following formal definition is a reformulation of~\cite[Chapter 29.2, Definition 1]{handbook}.
 \begin{definition}\label{def:ta}
-	A \emph{Timed Automaton} (TA) $\mathcal{A}$ is the data $(L, l_0, C, \Sigma, I, E)$ where:
-	\begin{itemize}
-		\item $L$ is a finite set of \emph{locations} with initial location $l_0 \in L$;
-		\item $C$ is a finite set of \emph{clocks};
-		\item $\Sigma$ is a finite set of \emph{actions};
-		\item $I \colon L \to \Phi(C)$ is an \emph{invariant mapping};
-		\item $E \subseteq L \times \Phi(C) \times \Sigma \times 2^{C} \times L$ is a set of edges.
-	\end{itemize}
+	A \emph{Timed Automaton} (TA) $\mathcal{A}$ is the data $(L, l_0, C, \Sigma, I, E)$ where
+	$L$ is a finite set of \emph{locations} with initial location $l_0 \in L$,
+	$C$ is a finite set of \emph{clocks},
+	$\Sigma$ is a finite set of \emph{actions},
+	$I \colon L \to \Phi(C)$ is an \emph{invariant mapping} and
+	$E \subseteq L \times \Phi(C) \times \Sigma \times 2^{C} \times L$ is a set of edges.
+
 	Any edge $(\ell, \varphi, a, r, \ell') \in E$ is denoted $\ell \xrightarrow{\varphi, a, r} \ell'$ where $\varphi$ is a \emph{guard}, and $r$ is a subset of clocks that are set to zero after taking the transition.
 \end{definition}
 An example of TA is given in Fig.~\ref{fig:ta_ex}.
@@ -81,14 +88,54 @@ An example of TA is given in Fig.~\ref{fig:ta_ex}.
 \tiny{Figure taken from \cite[Chapter 29.2]{handbook}}
 \end{figure}
 
-\begin{definition}
-	The \emph{operational semantics} of a TA $\mathcal{A} = (L, \ell_0, C, \Sigma, I, E)$ is the infinite-state timed transition system $[\![A]\!] = (S, s_0, \mathbb{R}_{\geq 0} \times \Sigma, T)$, where:
-	\begin{itemize}
-		\item $S := \{(\ell, v) \in L \times \mathbb{R}_{\geq 0}, v \models I(\ell)\}$ is the set of states | i.e.\ pairs of a location and a valuation such that the valuation is | satisfying the invariant and $s_0 := (\ell_0, \text{\bf 0}_C)$ is the inital state;
-		\item $T := \{(\ell, v) \xrightarrow{d, a} (\ell', (v+d)[r]) \ | \ d \in \mathbb{R}_{\geq 0}, \forall d' \in [0, d], v + d' \models I(\ell) \land \exists \ell \xrightarrow{\varphi, a, r} \ell' \in E, v + d \models \varphi \}$ is the set of transitions that one can take by selecting a delay to be elapsed in $\ell$ and an edge of $\mathcal{A}$ to be taken after the delay\footnote{Provided that the invariant and the guard are satisfied!}.
-	\end{itemize}
-\end{definition}
+\paragraph{Semantics}\label{par:semantics}
+The \emph{operational semantics} of a TA $\mathcal{A} = (L, \ell_0, C, \Sigma, I, E)$ is the infinite-state timed transition system $[\![A]\!] = (S, s_0, \mathbb{R}_{\geq 0} \times \Sigma, T)$, where
+\begin{align*}
+	&S := \{(\ell, v) \in L \times \mathbb{R}_{\geq 0}, v \models I(\ell)\}, \quad s_0 := (\ell_0, \text{\bf 0}_C),\\
+	&T := \{(\ell, v) \xrightarrow{d, a} (\ell', (v+d)[r]) \ | \ d \in \mathbb{R}_{\geq 0}, \forall d' \in [0, d], v + d' \models I(\ell) \land \exists \ell \xrightarrow{\varphi, a, r} \ell' \in E, v + d \models \varphi \}
+\end{align*}
+%% Informal description of the semantics:
+% $S$ is the set of states | i.e.\ pairs of a location and a valuation such that the valuation is | satisfying the invariant and $s_0 := (\ell_0, \text{\bf 0}_C)$ is the inital state;
+% $T$ is the set of transitions that one can take by selecting a delay to be elapsed in $\ell$ and an edge of $\mathcal{A}$ to be taken after the delay\footnote{Provided that the invariant and the guard are satisfied!}.
 
+%% Some comments about non-Zenoness?
+%% Formal definition : A timed automaton is non-Zeno if any finite run can be extended into a time-divergent run.
+%% ==> Zenoness informally represents nonrealizable behaviour, since their execution would require to perform infinitely many actions in finite time.
+
+\paragraph{Parallel Composition}\label{par:ta_parcomp}
+It is possible to compose several TA in parallel. Informally, parallel composition roughly consists in pairing the automata and taking the conjunction of their invariants, distinguishing two types of transitions, namely he synchronous\footnote{Synchronous transitions are given by a \emph{synchronization function}.} and asynchronous transitions.
+
+\paragraph{Region Equivalence}\label{par:ta_regeq}
+Informally, two valuations $v$ and $v'$ are region equivalent if a TA $\mathcal{A}$ cannot differentiate between them and we write\footnote{$M := (M_x)_{x \in C}$ where $M_x$ is the maximal constant $x$ is compared to in $\mathcal{A}$.} $v \cong_M v'$. This notion is extended to states of $\mathcal{A}$ by defining $(\ell, v) \cong_M (\ell', v')$ if $v \cong_M v'$ and $\ell = \ell'$. The equivalence class of $(\ell, v)$ is denoted $[\ell, v]_{\cong_M}$.
+
+Such a relation has the property of \emph{time-abstracted bisimulation}, which informally means that from any two equivalent states (for any binary  relation), the TA can take the same transitions, expect that the delays might differ.
+
+From this notion, we can define the \emph{region automaton} $\mathcal{R}_{\cong_M}(\mathcal{A}) = (S, s_0, \Sigma, T)$ which basically consists in quotienting $\mathcal{A}$ w.r.t.\ $\cong_M$:
+$$
+S = (L \times \mathbb{R}_{\geq 0})_{/\cong_M} \quad
+s_0 = [\ell_0, \text{\bf 0}_C]_{\cong_M} \quad
+T = \{ [\ell, v]_{\cong_M} \xrightarrow{a} [\ell', v']_{\cong_M}\ | \ \exists d, (\ell, v) \xrightarrow{d, a} (\ell', v')\}
+$$
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=.25\textwidth]{../img/TAreg.png}
+	\qquad
+	\begin{tabular}[b]{c|c||c}\hline
+	$P_1$ & $R_1$ & $f_1$\\
+	\hline
+	\hline
+	\texttt{start!} & $-$ & \texttt{start}$_1$ \\ \hline
+	\texttt{abort!} & $-$ & \texttt{abort}$_1$ \\ \hline
+	\texttt{acquire!} & \texttt{acquire?} & \texttt{acquire}$_1$ \\ \hline
+	\texttt{release!} & \texttt{release?} & \texttt{release}$_1$ \\ \hline
+	\end{tabular}
+	\caption{Clock regions for $(P_1 || R_1)_{f_1}$ where $f_1$ is given by its table of values.}\label{fig:ta_reg}
+	{\tiny Figure taken from \cite[Chapter 29.3]{handbook}}
+	\end{figure}
+	
+
+As an example, we give a represention of clock regions for the parallel composition of $P_1$ and $R_1$ in Fig.~\ref{fig:ta_reg}.
 
 \bibliographystyle{alpha}
 \bibliography{ref}
