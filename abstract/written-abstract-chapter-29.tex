@@ -40,7 +40,7 @@
 % - if possible, a paragraph on the relation to (some of) the other talks
 This abstract is based on Chapter 29 of the Handbook of Model Checking~\cite{handbook}.
 Section~\ref{sec:intro} first introduces and motivates model checking applied to real-time systems, building on~\cite[Chapters~29.1 and 29.2]{handbook}.
-Section~\ref{sec:ta} gives some formal definitions from ~\cite[Chapter~29.2]{handbook} about timed-automata and related notions.
+Section~\ref{sec:ta} gives some formal definitions from ~\cite[Chapter~29.2]{handbook} about timed-automata and related notions such as reachability and bisimulation.
 
 $\cdots$
 
@@ -130,8 +130,6 @@ As an example, we give a represention of clock regions for the parallel composit
 	{\tiny Figure taken from \cite[Chapter 29.3]{handbook}}
 \end{figure}
 
-Such a relation has the property of \emph{time-abstracted bisimulation}, which informally means that from any two equivalent states (for any binary  relation), the TA can take the same transitions, expect that the delays might differ.
-
 From this notion, we can define the \emph{region automaton} $\mathcal{R}_{\cong_M}(\mathcal{A}) = (S, s_0, \Sigma, T)$ which basically consists in quotienting $\mathcal{A}$ w.r.t.\ $\cong_M$:
 $$
 S = (L \times \mathbb{R}_{\geq 0})_{/\cong_M} \quad
@@ -139,11 +137,22 @@ s_0 = [\ell_0, \text{\bf 0}_C]_{\cong_M} \quad
 T = \{ [\ell, v]_{\cong_M} \xrightarrow{a} [\ell', v']_{\cong_M}\ | \ \exists d, (\ell, v) \xrightarrow{d, a} (\ell', v')\}
 $$
 
-The region automaton $\mathcal{R}_{\cong_M}(\mathcal{A})$ is a finite automaton whose size is exponential compared with the size of $\mathcal{A}$. It can be used to check, reachability properties (or equivalently language emptiness), and ``one of the most fundamental theorems'' \cite[Chapter 29.2, Theorem 1]{handbook} states that the reachability problem in TA is PSPACE-complete \cite[Section~4.5]{AlurDill}.
-
+%% Non essential
 % \begin{proposition}\label{prop:ta_reach}
 % 	A set $F \subseteq L$ of target locations is reachable in $\mathcal{A}$ iff $S_F := \{[\ell,v]\cong_M\ |\ \ell \in F\}$ is reachable in $\mathcal{R}_{\cong_M}(\mathcal{A})$ from $s_0$.
 % \end{proposition}
+
+The region automaton $\mathcal{R}_{\cong_M}(\mathcal{A})$ is a finite automaton whose size is exponential compared with the size of $\mathcal{A}$. It can be used to check, reachability properties and ``one of the most fundamental theorems'' \cite[Chapter 29.2, Theorem 1]{handbook} states that the reachability problem (or equivalently emptiness) in TA is PSPACE-complete \cite[Section~4.5]{AlurDill}.
+
+Any binary relation $R$ is a \emph{timed simulation} if for any two equivalent states $s_1\ R\ s_2$, and any transition $s_1 \xrightarrow{d, a} s_1'$, $s_2$ can reach a state $s_2'$ with the same transition $s_2 \xrightarrow{d, a} s_2'$ such that $s_1'\ R\ s_2'$. It is a \emph{timed bisimulation} if it is a timed simulation and symmetric.
+
+The relation $\cong_M$ has the weaker property of \emph{time-abstracted bisimulation}, which informally means that for a binary relation $R$ on states, from any two equivalent states the TA can take the same transitions, expect that the delays might differ.
+
+An important result \cite[Chapter 29.4.2]{handbook} is that decidability of both timed and time-abstracted (bi)similarity is ensured for TA.
+
+%% Non essential
+% Any two automata being timed bisimilar are also time-abstracted bisimilar.
+
 \paragraph{Extensions}\label{par:ta_ext}
 Many extensions of TA were proposed in the literature, such as allowing \emph{diagonal constraints}\footnote{Constraints of the form $x - y \odot k$.}, \emph{updatable} TA\footnote{Clocks can be updated to any value instead of being reset to 0.} or adding \emph{urgency} requirements. However, it has been shown that such extensions are no more expressive than the original class of TA. Furthermore, most attempted extensions generally lead to undecidability of the reachability problem, e.g.\ by simply adding linear constraints of the form $\lambda x + \mu y \leq k$, or more complex classes such as \emph{parametrized} or \emph{hybrid} automata.
 
