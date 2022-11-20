@@ -12,6 +12,8 @@
 \newtheorem{definition}{Definition}
 \theoremstyle{remark}
 \newtheorem{example}{Example}
+\theoremstyle{definition}
+\newtheorem{proposition}{Proposition}
 
 \hypersetup{
 	colorlinks=true,
@@ -49,8 +51,10 @@ $\cdots$
 
 \section{Timed Automata}\label{sec:ta}
 \paragraph{Preliminaries}\label{par:prelims}
-In this chapter, time values are equated with non-negative real numbers of $\mathbb{R}_{\geq 0}$. A \emph{time sequence} is a finite or infinite non-decreasing sequence of time values. A \emph{timed word} over $\Sigma \times \mathbb{R}_{\geq 0}$ is a word over the alphabet $\Sigma$ sequentially paired with a time sequence.
-If the time sequence of a timed word is upper-bounded or converging, the timed word is said to be \emph{converging} and \emph{divergent} otherwise.
+In this chapter, time values are equated with non-negative real numbers of $\mathbb{R}_{\geq 0}$. A \emph{time sequence} is a finite or infinite non-decreasing sequence of time values.
+A \emph{timed word} over $\Sigma \times \mathbb{R}_{\geq 0}$ is a word over the alphabet $\Sigma$ sequentially paired with a time sequence.
+%% Useless?
+% If the time sequence of a timed word is upper-bounded or converging, the timed word is said to be \emph{converging} and \emph{divergent} otherwise.
 
 Let $C$ be a finite set of variables called \emph{clocks}. A \emph{valuation} over $C$ is a mapping $v \colon C \to \mathbb{R}_{\geq 0}$. The set of valuations over $C$ is denoted $\mathbb{R}_{\geq 0}^C$ and $\text{\bf 0}_C$ denoted the valuation assigning 0 to every clock of C.
 
@@ -99,14 +103,32 @@ The \emph{operational semantics} of a TA $\mathcal{A} = (L, \ell_0, C, \Sigma, I
 % $T$ is the set of transitions that one can take by selecting a delay to be elapsed in $\ell$ and an edge of $\mathcal{A}$ to be taken after the delay\footnote{Provided that the invariant and the guard are satisfied!}.
 
 %% Some comments about non-Zenoness?
-%% Formal definition : A timed automaton is non-Zeno if any finite run can be extended into a time-divergent run.
+%% Formal definition : ``A timed automaton is non-Zeno if any finite run can be extended into a time-divergent run.''
 %% ==> Zenoness informally represents nonrealizable behaviour, since their execution would require to perform infinitely many actions in finite time.
 
 \paragraph{Parallel Composition}\label{par:ta_parcomp}
-It is possible to compose several TA in parallel. Informally, parallel composition roughly consists in pairing the automata and taking the conjunction of their invariants, distinguishing two types of transitions, namely he synchronous\footnote{Synchronous transitions are given by a \emph{synchronization function}.} and asynchronous transitions.
+It is possible to compose several TA in parallel. Informally, parallel composition roughly consists in pairing the automata and taking the conjunction of their invariants, distinguishing two types of transitions, namely the synchronous\footnote{Synchronous transitions are given by a \emph{synchronization function}.} and asynchronous transitions. The point is that systems can be defined in a compositional way.
 
 \paragraph{Region Equivalence}\label{par:ta_regeq}
-Informally, two valuations $v$ and $v'$ are region equivalent if a TA $\mathcal{A}$ cannot differentiate between them and we write\footnote{$M := (M_x)_{x \in C}$ where $M_x$ is the maximal constant $x$ is compared to in $\mathcal{A}$.} $v \cong_M v'$. This notion is extended to states of $\mathcal{A}$ by defining $(\ell, v) \cong_M (\ell', v')$ if $v \cong_M v'$ and $\ell = \ell'$. The equivalence class of $(\ell, v)$ is denoted $[\ell, v]_{\cong_M}$.
+Informally, two valuations are region equivalent if a TA cannot differentiate between them and we write\footnote{$M := (M_x)_{x \in C}$ where $M_x$ is the maximal constant clock $x$ is compared to in the TA.} this relation $\cong_M$. This notion is extended to states of the TA by defining $(\ell, v) \cong_M (\ell', v')$ iff $v \cong_M v'$ and $\ell = \ell'$. The equivalence class of $(\ell, v)$ is denoted $[\ell, v]_{\cong_M}$.
+As an example, we give a represention of clock regions for the parallel composition of $P_1$ and $R_1$ in Fig.~\ref{fig:ta_reg}.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=.25\textwidth]{../img/TAreg.png}
+	\qquad
+	\begin{tabular}[b]{c|c||c}\hline
+	$P_1$ & $R_1$ & $f_1$\\
+	\hline
+	\hline
+	\texttt{start!} & $-$ & \texttt{start} \\ \hline
+	\texttt{abort!} & $-$ & \texttt{abort} \\ \hline
+	\texttt{acquire!} & \texttt{acquire?} & \texttt{acquire} \\ \hline
+	\texttt{release!} & \texttt{release?} & \texttt{release} \\ \hline
+	\end{tabular}
+	\caption{Clock regions for $(P_1 || R_1)_{f_1}$ where $f_1$ is given by its table of values.}\label{fig:ta_reg}
+	{\tiny Figure taken from \cite[Chapter 29.3]{handbook}}
+\end{figure}
 
 Such a relation has the property of \emph{time-abstracted bisimulation}, which informally means that from any two equivalent states (for any binary  relation), the TA can take the same transitions, expect that the delays might differ.
 
@@ -117,25 +139,14 @@ s_0 = [\ell_0, \text{\bf 0}_C]_{\cong_M} \quad
 T = \{ [\ell, v]_{\cong_M} \xrightarrow{a} [\ell', v']_{\cong_M}\ | \ \exists d, (\ell, v) \xrightarrow{d, a} (\ell', v')\}
 $$
 
-\begin{figure}[ht]
-	\centering
-	\includegraphics[width=.25\textwidth]{../img/TAreg.png}
-	\qquad
-	\begin{tabular}[b]{c|c||c}\hline
-	$P_1$ & $R_1$ & $f_1$\\
-	\hline
-	\hline
-	\texttt{start!} & $-$ & \texttt{start}$_1$ \\ \hline
-	\texttt{abort!} & $-$ & \texttt{abort}$_1$ \\ \hline
-	\texttt{acquire!} & \texttt{acquire?} & \texttt{acquire}$_1$ \\ \hline
-	\texttt{release!} & \texttt{release?} & \texttt{release}$_1$ \\ \hline
-	\end{tabular}
-	\caption{Clock regions for $(P_1 || R_1)_{f_1}$ where $f_1$ is given by its table of values.}\label{fig:ta_reg}
-	{\tiny Figure taken from \cite[Chapter 29.3]{handbook}}
-	\end{figure}
-	
+The region automaton $\mathcal{R}_{\cong_M}(\mathcal{A})$ is a finite automaton whose size is exponential compared with the size of $\mathcal{A}$. It can be used to check, reachability properties (or equivalently language emptiness), and ``one of the most fundamental theorems'' \cite[Chapter 29.2, Theorem 1]{handbook} states that the reachability problem in TA is PSPACE-complete \cite[Section~4.5]{AlurDill}.
 
-As an example, we give a represention of clock regions for the parallel composition of $P_1$ and $R_1$ in Fig.~\ref{fig:ta_reg}.
+% \begin{proposition}\label{prop:ta_reach}
+% 	A set $F \subseteq L$ of target locations is reachable in $\mathcal{A}$ iff $S_F := \{[\ell,v]\cong_M\ |\ \ell \in F\}$ is reachable in $\mathcal{R}_{\cong_M}(\mathcal{A})$ from $s_0$.
+% \end{proposition}
+\paragraph{Extensions}\label{par:ta_ext}
+Many extensions of TA were proposed in the literature, such as allowing \emph{diagonal constraints}\footnote{Constraints of the form $x - y \odot k$.}, \emph{updatable} TA\footnote{Clocks can be updated to any value instead of being reset to 0.} or adding \emph{urgency} requirements. However, it has been shown that such extensions are no more expressive than the original class of TA. Furthermore, most attempted extensions generally lead to undecidability of the reachability problem, e.g.\ by simply adding linear constraints of the form $\lambda x + \mu y \leq k$, or more complex classes such as \emph{parametrized} or \emph{hybrid} automata.
+
 
 \bibliographystyle{alpha}
 \bibliography{ref}
