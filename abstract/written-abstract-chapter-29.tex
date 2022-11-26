@@ -40,14 +40,33 @@
 % - if possible, a paragraph on the relation to (some of) the other talks
 This abstract is based on Chapter 29 of the Handbook of Model Checking~\cite{handbook}.
 Section~\ref{sec:intro} first introduces and motivates model checking applied to real-time systems, building on~\cite[Chapters~29.1 and 29.2]{handbook}.
-Section~\ref{sec:ta} gives some formal definitions from ~\cite[Chapter~29.2]{handbook} about timed-automata and related notions such as reachability and bisimulation.
+Section~\ref{sec:ta} gives some formal definitions from ~\cite[Chapters~29.2 and 29.7]{handbook} about timed automata and related notions such as region equivalence and zones.
+Finally, Section~\ref{sec:app} briefly introduces time-extended formalisms such as \emph{Timed Temporal Logic} and \emph{Timed Games} related to timed automata for the verification of real-time systems, building on~\cite[Chapters~29.6~and~29.9]{handbook}.
 
-$\cdots$
+
+\iffalse
+Outline of the talk:
+- Timed automata
+- Regions
+- Zones
+- Timed Temporal Logics
+	- LTL, continuous and pointwise semantics
+	- TCTL model-checking is PSPACE-complete
+- Timed Games
+if time:
+- Language Theoretic Properties
+	- Theorems 7, 8, 9
+- Branching-Time Temporal Logics
+	- TCTL*, MTL
+\fi
+
+
 
 \section{Introduction}\label{sec:intro}
-The most basic problem regarding timed automata is reachability, i.e.\ given a timed automaton $\mathcal{A}$, is a set of locations $F$ of $\mathcal{A}$ reachable or not.
+\paragraph{Motivation} In the early 1990s, Rajeev Alur and David Dill introduced a powerful and expressive formalism named \emph{timed automata} which have proven very convenient for modeling and reasoning about real-time systems.
+It is nowadays a standard tool for the verification of real-time systems and has many applications in the industry, while also being a very active research area.
 
-$\cdots$
+\paragraph{Outlook} The most basic problem in model-checking is \emph{reachability}, i.e.\ given a structure, one wants to determine whether a set of locations is reachable from an initial location. Since model-checking reasons on properties written in temporal logic, we need \emph{timed temporal logic} that can express properties on timed automata. With such a formalism, one may eventually be interested in the controller synthesis problem, which can be expressed in the formalism of \emph{timed games}. My presentation will therefore be articulated around these notions.
 
 \section{Timed Automata}\label{sec:ta}
 \paragraph{Preliminaries}\label{par:prelims}
@@ -111,7 +130,7 @@ It is possible to compose several TA in parallel. Informally, parallel compositi
 
 \paragraph{Region Equivalence}\label{par:ta_regeq}
 Informally, two valuations are region equivalent if a TA cannot differentiate between them and we write\footnote{$M := (M_x)_{x \in C}$ where $M_x$ is the maximal constant clock $x$ is compared to in the TA.} this relation $\cong_M$. This notion is extended to states of the TA by defining $(\ell, v) \cong_M (\ell', v')$ iff $v \cong_M v'$ and $\ell = \ell'$. The equivalence class of $(\ell, v)$ is denoted $[\ell, v]_{\cong_M}$.
-As an example, we give a represention of clock regions for the parallel composition of $P_1$ and $R_1$ in Fig.~\ref{fig:ta_reg}.
+As an example, we give a representation of clock regions for the parallel composition of $P_1$ and $R_1$ in Fig.~\ref{fig:ta_reg}.
 
 \begin{figure}[ht]
 	\centering
@@ -144,18 +163,29 @@ $$
 
 The region automaton $\mathcal{R}_{\cong_M}(\mathcal{A})$ is a finite automaton whose size is exponential compared with the size of $\mathcal{A}$. It can be used to check, reachability properties and ``one of the most fundamental theorems'' \cite[Chapter 29.2, Theorem 1]{handbook} states that the reachability problem (or equivalently emptiness) in TA is PSPACE-complete \cite[Section~4.5]{AlurDill}.
 
-Any binary relation $R$ is a \emph{timed simulation} if for any two equivalent states $s_1\ R\ s_2$, and any transition $s_1 \xrightarrow{d, a} s_1'$, $s_2$ can reach a state $s_2'$ with the same transition $s_2 \xrightarrow{d, a} s_2'$ such that $s_1'\ R\ s_2'$. It is a \emph{timed bisimulation} if it is a timed simulation and symmetric.
+\paragraph{Zones} \label{par:zones}
+The number of states obtained from the region partitionning is unfortunately extremely large, so the notion of \emph{zones} was introduced as a coarser representation of the state space. \emph{Zones} are exactly the sets $[\![\varphi]\!]_C$ of valuations satisfying any guard $\varphi \in \Phi_d(C)$\footnote{$\Phi_d(C)$ is the set of \emph{diagonal constraints} over $C$, i.e.\ constraints of the form $x - y \odot k$.}.
+Similarly to the region automaton, we can define the \emph{zone automaton}, except that the zone automaton is infinite so the zones need to be \emph{normalized}, which basically consists in quotienting each zone w.r.t.\ the equivalence relation $\cong_M$\footnote{This quotient does not produce a zone in general, other operators are therefore used in practice, such as the \emph{extrapolation} of a \emph{shortest-path-closed} DBM (\emph{difference-bound matrix}).}.
 
-The relation $\cong_M$ has the weaker property of \emph{time-abstracted bisimulation}, which informally means that for a binary relation $R$ on states, from any two equivalent states the TA can take the same transitions, expect that the delays might differ.
+% Any binary relation $R$ is a \emph{timed simulation} if for any two equivalent states $s_1\ R\ s_2$, and any transition $s_1 \xrightarrow{d, a} s_1'$, $s_2$ can reach a state $s_2'$ with the same transition $s_2 \xrightarrow{d, a} s_2'$ such that $s_1'\ R\ s_2'$. It is a \emph{timed bisimulation} if it is a timed simulation and symmetric.
 
-An important result \cite[Chapter 29.4.2]{handbook} is that decidability of both timed and time-abstracted (bi)similarity is ensured for TA.
+% The relation $\cong_M$ has the weaker property of \emph{time-abstracted bisimulation}, which informally means that for a binary relation $R$ on states, from any two equivalent states the TA can take the same transitions, expect that the delays might differ.
+
+% An important result \cite[Chapter 29.4.2]{handbook} is that decidability of both timed and time-abstracted (bi)similarity is ensured for TA.
 
 %% Non essential
 % Any two automata being timed bisimilar are also time-abstracted bisimilar.
 
 \paragraph{Extensions}\label{par:ta_ext}
-Many extensions of TA were proposed in the literature, such as allowing \emph{diagonal constraints}\footnote{Constraints of the form $x - y \odot k$.}, \emph{updatable} TA\footnote{Clocks can be updated to any value instead of being reset to 0.} or adding \emph{urgency} requirements. However, it has been shown that such extensions are no more expressive than the original class of TA. Furthermore, most attempted extensions generally lead to undecidability of the reachability problem, e.g.\ by simply adding linear constraints of the form $\lambda x + \mu y \leq k$, or more complex classes such as \emph{parametrized} or \emph{hybrid} automata.
+Many extensions of TA were proposed in the literature, such as allowing \emph{diagonal constraints}, \emph{updatable} TA\footnote{Clocks can be updated to any value instead of being reset to 0.} or adding \emph{urgency} requirements. However, it has been shown that such extensions are no more expressive than the original class of TA. Furthermore, most attempted extensions generally lead to undecidability of the reachability problem, e.g.\ by simply adding constraints of the form $\lambda x + \mu y \leq k$ or $x := x + k$, or more complex classes such as \emph{hybrid} automata.
 
+\section{Model checking timed systems}\label{sec:app}
+\paragraph{Timed Temporal Logic}\label{par:timedlogic} We extend the usual theory of LTL presented in \cite[Chapter~2]{handbook} to timed systems with MTL (\emph{Metric Temporal Logic}).
+Given a set of atomic propositions $P$, an interval $I$ and a \emph{time-constrained until} operator $\text{\bf U}_I$, the formulas of MTL are defined as follows:
+\begin{equation*}
+	\varphi ::= p \in P\ |\ \neg \varphi\ |\ \varphi \land \varphi\ |\ \varphi \text{\bf U}_I \varphi
+\end{equation*}
+Similarly, the \emph{constrained always} operator $\square_I$ and \emph{constrained eventually} operator $\lozenge_I$ with $\text{\bf U}_I$ can be defined in this time-constrained setting. Two different semantics are usually adopted for MTL, namely the \emph{continuous} and \emph{pointwise} semantics. Informally, the pointwise semantics allows one to assert formulas only at discrete set of points, while the continuous semantics allows one to assert formulas at arbitrary time points.
 
 \bibliographystyle{alpha}
 \bibliography{ref}
