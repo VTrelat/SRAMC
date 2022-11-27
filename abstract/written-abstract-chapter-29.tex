@@ -42,6 +42,7 @@ This abstract is based on Chapter 29 of the Handbook of Model Checking~\cite{han
 Section~\ref{sec:intro} first introduces and motivates model checking applied to real-time systems, building on~\cite[Chapters~29.1 and 29.2]{handbook}.
 Section~\ref{sec:ta} gives some formal definitions from ~\cite[Chapters~29.2 and 29.7]{handbook} about timed automata and related notions such as region equivalence and zones.
 Finally, Section~\ref{sec:app} briefly introduces time-extended formalisms such as \emph{Timed Temporal Logic} and \emph{Timed Games} related to timed automata for the verification of real-time systems, building on~\cite[Chapters~29.6~and~29.9]{handbook}.
+An additional Section~\ref{sec:lang} brings some further material about language-theoretic properties that are not related to model checking and will not be discussed in the talk.
 
 
 \iffalse
@@ -129,7 +130,10 @@ The \emph{operational semantics} of a TA $\mathcal{A} = (L, \ell_0, C, \Sigma, I
 It is possible to compose several TA in parallel. Informally, parallel composition roughly consists in pairing the automata and taking the conjunction of their invariants, distinguishing two types of transitions, namely the synchronous\footnote{Synchronous transitions are given by a \emph{synchronization function}.} and asynchronous transitions. The point is that systems can be defined in a compositional way.
 
 \paragraph{Region Equivalence}\label{par:ta_regeq}
-Informally, two valuations are region equivalent if a TA cannot differentiate between them and we write\footnote{$M := (M_x)_{x \in C}$ where $M_x$ is the maximal constant clock $x$ is compared to in the TA.} this relation $\cong_M$. This notion is extended to states of the TA by defining $(\ell, v) \cong_M (\ell', v')$ iff $v \cong_M v'$ and $\ell = \ell'$. The equivalence class of $(\ell, v)$ is denoted $[\ell, v]_{\cong_M}$.
+Informally, two valuations are region equivalent if a TA cannot differentiate between them and we write\footnote{$M := (M_x)_{x \in C}$ where $M_x$ is the maximal constant clock $x$ is compared to in the TA.} this relation $\cong_M$.
+More formally, two valuations are region equivalent if their evaluations on any clock have the same integral parts and one has its fractional part null iff the other has its fractional part null and the order of the fractional parts is the same.
+
+This notion is extended to states of the TA by defining $(\ell, v) \cong_M (\ell', v')$ iff $v \cong_M v'$ and $\ell = \ell'$. The equivalence class of $(\ell, v)$ is denoted $[\ell, v]_{\cong_M}$.
 As an example, we give a representation of clock regions for the parallel composition of $P_1$ and $R_1$ in Fig.~\ref{fig:ta_reg}.
 
 \begin{figure}[ht]
@@ -165,7 +169,7 @@ The region automaton $\mathcal{R}_{\cong_M}(\mathcal{A})$ is a finite automaton 
 
 \paragraph{Zones} \label{par:zones}
 The number of states obtained from the region partitionning is unfortunately extremely large, so the notion of \emph{zones} was introduced as a coarser representation of the state space. \emph{Zones} are exactly the sets $[\![\varphi]\!]_C$ of valuations satisfying any guard $\varphi \in \Phi_d(C)$\footnote{$\Phi_d(C)$ is the set of \emph{diagonal constraints} over $C$, i.e.\ constraints of the form $x - y \odot k$.}.
-Similarly to the region automaton, we can define the \emph{zone automaton}, except that the zone automaton is infinite so the zones need to be \emph{normalized}, which basically consists in quotienting each zone w.r.t.\ the equivalence relation $\cong_M$\footnote{This quotient does not produce a zone in general, other operators are therefore used in practice, such as the \emph{extrapolation} of a \emph{shortest-path-closed} DBM (\emph{difference-bound matrix}).}.
+Similarly to the region automaton, we can define the \emph{zone automaton}, except that the zone automaton is infinite, so zones need to be \emph{normalized}, which basically consists in quotienting each zone w.r.t.\ the equivalence relation $\cong_M$. This operation does not produce zones in general, other operators are therefore used in practice, such as the \emph{extrapolation} of a \emph{shortest-path-closed} DBM (\emph{difference-bound matrix}).
 
 % Any binary relation $R$ is a \emph{timed simulation} if for any two equivalent states $s_1\ R\ s_2$, and any transition $s_1 \xrightarrow{d, a} s_1'$, $s_2$ can reach a state $s_2'$ with the same transition $s_2 \xrightarrow{d, a} s_2'$ such that $s_1'\ R\ s_2'$. It is a \emph{timed bisimulation} if it is a timed simulation and symmetric.
 
@@ -185,7 +189,28 @@ Given a set of atomic propositions $P$, an interval $I$ and a \emph{time-constra
 \begin{equation*}
 	\varphi ::= p \in P\ |\ \neg \varphi\ |\ \varphi \land \varphi\ |\ \varphi \text{\bf U}_I \varphi
 \end{equation*}
-Similarly, the \emph{constrained always} operator $\square_I$ and \emph{constrained eventually} operator $\lozenge_I$ with $\text{\bf U}_I$ can be defined in this time-constrained setting. Two different semantics are usually adopted for MTL, namely the \emph{continuous} and \emph{pointwise} semantics. Informally, the pointwise semantics allows one to assert formulas only at discrete set of points, while the continuous semantics allows one to assert formulas at arbitrary time points.
+Similarly, the \emph{constrained always} operator $\square_I$ and \emph{constrained eventually} operator $\lozenge_I$ can be defined with $\text{\bf U}_I$ in this time-constrained setting. Two different semantics are usually adopted for MTL, namely the \emph{continuous} and \emph{pointwise} semantics. Informally, the pointwise semantics allows one to assert formulas only at discrete set of points, while the continuous semantics allows one to assert formulas at arbitrary time points.
+
+As one may imagine, bringing such expressiveness affects decidability. Although model checking and satisfiability for LTL are PSPACE-complete over both semantics, it is easy to see that the continuous semantics is strictly more expressive than the pointwise semantics, which results in losing decidability for model checking and satisfiability for MTL over the continuous semantics, as well as over the pointwise semantics for infinite words. By reducing expressiveness of MTL\footnote{See for instance MITL (EXPSPACE-complete), ECTL (PSPACE-complete) and MTL over \emph{bounded time} (EXPSPACE-complete).}, one can recover decidability for model checking and satisfiability over both semantics.
+
+The case of branching-time such as CTL and CTL* can be adapted to timed systems as well to TCTL and TCTL*. Unfortunately, only TCTL model checking is decidable (and PSPACE-complete).
+
+\paragraph{Timed Games}\label{par:timedgames}
+As explained in \cite[Chapter 27]{handbook}, games provide a convenient framework for modeling and reasoning about environments that may be affected by several (uncontrollable) agents.
+An important result is that (time-optimal) reachability and safety games are decidable and EXPTIME-complete for timed games.
+The key ingredient of the proof of this result is that it is sufficient for those specific control objectives to consider \emph{memoryless} strategies, i.e.\ strategies that do not depend on the history of the game.
+By authorizing time divergent\footnote{Such an assumption stems from the condition of \emph{non-Zenoness} which is another interesting notion. Basically, a run is \emph{Zeno} if it can take infinitely many transitions in finite time.} strategies only, deciding the existence of a winning strategy for reachability and safety games is EXPTIME-complete.
+
+Timed games can also be used to decide bisimilarity of two states of an automaton (in exponential time).
+Informally, two equivalent states of a TA are time bisimilar (for some equivalence relation) if the TA can take the same transitions from those states.
+
+Timed games have received a lot of attention recently, some work has conducted on extensions in which, for instance, players have different objectives.
+
+\section{Language-Theoretic Properties}\label{sec:lang}
+As one might expect, all the above sections are related to language-theoretic properties of timed automata.
+In this section, we present some of the most important results related to \emph{timed languages}.
+For instance, contrary to the untimed case, $\varepsilon$-TA are strictly more expressive than TA and one cannot decide whether a given $\varepsilon$-TA has a TA equivalent (without $\varepsilon$-transitions).
+Although in the general case the language-inclusion problem is undecidable for TA, it may recover its decidability in some special cases, such as when the containing TA is an \emph{event-clock automaton} (over infinite words) or has at most one clock (over finite words), or under \emph{closed-time} or \emph{bounded-time} assumptions.
 
 \bibliographystyle{alpha}
 \bibliography{ref}
