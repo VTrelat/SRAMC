@@ -1,0 +1,61 @@
+\documentclass{beamer}
+\usepackage{graphicx}
+\usepackage{amsmath, amsthm, amsfonts, amssymb, mathrsfs}
+\usepackage{textcomp} % straigth apos
+\usepackage{tikz}
+\usepackage{verbatim}
+\usepackage{tikzit}
+\usepackage{listings}
+\usepackage{subfig}
+\usepackage[ruled,vlined, linesnumbered]{algorithm2e}
+\usepackage{algorithmic,float}
+
+
+\input{graphs.tikzstyles}
+
+\theoremstyle{definition}
+
+\setbeamercovered{invisible}
+
+\setbeamertemplate{theorems}[numbered]
+\setbeamertemplate{lemma}[numbered]
+\newtheorem{remark}{Remark}
+
+\usetheme{Madrid}
+\useoutertheme{tree} % Alternatively: miniframes, infolines, split
+\useinnertheme{circles}
+
+\setbeamertemplate{headline}
+{%
+  \leavevmode%
+  \begin{beamercolorbox}[wd=.5\paperwidth,ht=2.5ex,dp=1.125ex]{section in head/foot}%
+    \hbox to .5\paperwidth{\hfil\insertsectionhead\hfil}
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.5\paperwidth,ht=2.5ex,dp=1.125ex]{subsection in head/foot}%
+    \hbox to .5\paperwidth{\hfil\insertsubsectionhead\hfil}
+  \end{beamercolorbox}%
+}
+
+\definecolor{lightbrown}{RGB}{207, 161, 118}
+
+\usecolortheme[named=lightbrown]{structure}
+
+\title[Model Checking Real-Time Systems]{Model Checking Real-Time Systems}
+\date{December 12, 2022}
+\author[V. Trélat]{Vincent Trélat}
+\institute[TUM]{Technical University of Munich}
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}
+  An example of figure:
+  \begin{figure}
+    \ctikzfig{fig1}
+  \end{figure}
+\end{frame}
+
+\end{document}

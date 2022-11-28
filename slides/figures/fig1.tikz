@@ -1,0 +1,23 @@
+\begin{tikzpicture}[scale=2.25]
+	\begin{pgfonlayer}{nodelayer}
+		\node [style=none] (3) at (-0.75, 0) {};
+		\node [style=white, minimum size=25pt] (0) at (0, 0) {};
+		\draw node [style=white, minimum size=25pt] (1) at (3, 0) {};
+		\node [style=double white, minimum size=25pt] (2) at (6, 0) {};
+		\node [style=none] (4) at (3, -2.25) {\small\tt double-click!};
+		\node [style=none] (5) at (3, -2.75) {\small$x = 300$};
+		\node [style=none] (6) at (1.25, 0.25) {\small\tt press?};
+		\node [style=none] (7) at (1.25, -0.25) {\small$x := 0$};
+		\node [style=none] (8) at (1.75, -0.5) {\small$x = 300$};
+		\node [style=none] (9) at (1.75, -1) {\small\tt click!};
+		\node [style=none] (10) at (4.5, 0.25) {\small\tt press?};
+		\node [style=none] (11) at (4.5, -0.25) {\small$x < 300$};
+	\end{pgfonlayer}
+	\begin{pgfonlayer}{edgelayer}
+		\draw [style=right arrow] (3.center) to (0);
+		\draw [style=right arrow] (0) to (1);
+		\draw [style=right arrow] (1) to (2);
+		\draw [style=right arrow, bend left=45] (1) to (0);
+		\draw [style=right arrow, bend left=90, looseness=1.25] (2) to (0);
+	\end{pgfonlayer}
+\end{tikzpicture}
