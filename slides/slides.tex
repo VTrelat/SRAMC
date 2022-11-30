@@ -108,6 +108,130 @@
   \ctikzfig{ex_ta}
 \end{frame}
 
+\begin{frame}{Operational Semantics}
+\onslide<1->{
+\begin{figure}
+  \centering
+  \begin{tikzpicture}
+  \small
+	\begin{pgfonlayer}{nodelayer}
+		\node [style=white, align=center] (0) at (-2, 0) {$\ell$ \\ $y \leq 1$};
+		\node [style=white, align=center] (1) at (2, 0) {$\ell'$ \\ $y \leq 2$};
+		\node [style=none] (2) at (0, -0.25) {$x > 1, x := 0$};
+		\node [style=none] (3) at (0, 0.25) {$a$};
+	\end{pgfonlayer}
+	\begin{pgfonlayer}{edgelayer}
+		\draw [->, thick] (0) -- (1);
+	\end{pgfonlayer}
+\end{tikzpicture}
+\end{figure}
+}
+\onslide<2->{
+  \begin{equation*}
+    \begin{cases}
+      v(x) = {\color{red}1.2}\\
+      v(y) = {\color{red}0.8}
+    \end{cases}
+    \onslide<3->{
+    \quad
+    (\ell, v) \xrightarrow{{\color{red}0.5},\ a} (\ell', v')
+    \quad
+    }
+    \onslide<4->{
+    \begin{cases}
+      v'(x) = {\color{red}0}\\
+      v'(y) = {\color{red}1.3}
+    \end{cases}
+    }
+  \end{equation*}
+}
+\onslide<5->{
+  \begin{equation*}
+    \begin{cases}
+      v(x) = {\color{red}1.2}\\
+      v(y) = {\color{red}0.8}
+    \end{cases}
+    \onslide<6->{
+    \quad
+    (\ell, v) \xrightarrow{{\color{red}1.2},\ a} (\ell', v')
+    \quad
+    }
+    \onslide<7->{
+    \begin{cases}
+      v'(x) = {\color{red}0}\\
+      v'(y) = {\color{red}2}
+    \end{cases}
+    }
+  \end{equation*}
+}
+\end{frame}
+
+\begin{frame}{Operational Semantics}
+  \only<1>{
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}
+    \small
+    \begin{pgfonlayer}{nodelayer}
+      \node [style=white, align=center] (0) at (-2, 0) {$\ell$ \\ $y \leq 1$};
+      \node [style=white, align=center] (1) at (2, 0) {$\ell'$ \\ $y \leq 2$};
+      \node [style=none] (2) at (0, -0.25) {$x > 1, x := 0$};
+      \node [style=none] (3) at (0, 0.25) {$a$};
+    \end{pgfonlayer}
+    \begin{pgfonlayer}{edgelayer}
+      \draw [->, thick] (0) -- (1);
+    \end{pgfonlayer}
+  \end{tikzpicture}
+  \end{figure}
+  }
+  \only<2->{
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}
+    \small
+    \begin{pgfonlayer}{nodelayer}
+      \node [style=white, align=center] (0) at (-2, 0) {$\ell$ \\ $\ I(\ell)\ $};
+      \node [style=white, align=center] (1) at (2, 0) {$\ell'$ \\ $\ I(\ell')\ $};
+      \node [style=none] (2) at (0, -0.25) {$\varphi, r$};
+      \node [style=none] (3) at (0, 0.25) {$a$};
+    \end{pgfonlayer}
+    \begin{pgfonlayer}{edgelayer}
+      \draw [->, thick] (0) -- (1);
+    \end{pgfonlayer}
+  \end{tikzpicture}
+  \end{figure}
+  }
+  \only<3>{
+  \begin{equation*}
+    (\ell, v) \xrightarrow{d,\ a} (\ell', v')
+  \end{equation*}
+  }
+  \only<4->{
+  \begin{equation*}
+    (\ell, v) \xrightarrow{d,\ a} (\ell', (v+d)[r])
+  \end{equation*}
+  }
+  \onslide<5->{
+  provided that:
+  $$\ell \xrightarrow{\varphi, a, r} \ell'\ \text{is a transition in the TA}$$
+  $$\forall t \in [0, d], \ v + t \models I(\ell)$$
+  $$v + d \models I(\ell')$$
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Operational Semantics}
+\begin{definition}
+  \small
+  The \emph{operational semantics} of a TA $A = (L, \ell_0, C, \Sigma, I, E)$ is the infinite-state timed transition system $[\![A]\!] = (S, s_0, \Sigma \times \mathbb{R}_{\geq 0}, T)$, where
+  \begin{align*}
+	  &S := \{(\ell, v) \in L \times \mathbb{R}_{\geq 0}^C\ |\ v \models I(\ell)\}, \quad s_0 := (\ell_0, \text{\bf 0}_C),\\
+	  &T := \{(\ell, v) \xrightarrow{d, a} (\ell', (v+d)[r]) \ | \ d \in \mathbb{R}_{\geq 0}, \\
+    &\quad\quad\quad\quad\forall d' \in [0, d], v + d' \models I(\ell) \land \exists \ell \xrightarrow{\varphi, a, r} \ell' \in E, v + d \models \varphi \}
+  \end{align*}
+\end{definition}
+\end{frame}
+
 \subsection{Regions and zones}
 \subsection{Extensions}
 

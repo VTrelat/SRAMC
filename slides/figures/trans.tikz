@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+	\begin{pgfonlayer}{nodelayer}
+		\node [style=white] (0) at (-3, 0) {$y \leq 1$};
+		\node [style=white] (1) at (3, 0) {$y \leq 2$};
+		\node [style=none] (2) at (0, -0.5) {$x > 0$};
+		\node [style=none] (3) at (0, 0.5) {$a$};
+		\node [style=none] (4) at (0, 1.75) {$v(y) = 0.8$};
+	\end{pgfonlayer}
+	\begin{pgfonlayer}{edgelayer}
+		\draw [style=right arrow] (0) to (1);
+	\end{pgfonlayer}
+\end{tikzpicture}

@@ -98,7 +98,7 @@ We say that a valuation $v$ over $C$ satisfies $x \odot k$ when $v(x) \odot k$, 
 A timed automaton is basically a finite automaton with (real-time) constraints on the states.
 The following formal definition is a reformulation of~\cite[Chapter 29.2, Definition 1]{handbook}.
 \begin{definition}\label{def:ta}
-	A \emph{Timed Automaton} (TA) $\mathcal{A}$ is the tuple $(L, \ell_0, C, \Sigma, I, E)$ where
+	A \emph{Timed Automaton} (TA) $A$ is the tuple $(L, \ell_0, C, \Sigma, I, E)$ where
 	$L$ is a finite set of \emph{locations} with initial location $\ell_0 \in L$,
 	$C$ is a finite set of \emph{clocks},
 	$\Sigma$ is a finite set of \emph{actions},
@@ -116,13 +116,13 @@ An example consisting of the graphic representation of a timed automaton is give
 \end{figure}
 
 \paragraph{Semantics}\label{par:semantics}
-The \emph{operational semantics} of a TA $\mathcal{A} = (L, \ell_0, C, \Sigma, I, E)$ is the infinite-state timed transition system $[\![A]\!] = (S, s_0, \mathbb{R}_{\geq 0} \times \Sigma, T)$, where
+The \emph{operational semantics} of a TA $A = (L, \ell_0, C, \Sigma, I, E)$ is the infinite-state timed transition system $[\![A]\!] = (S, s_0, \Sigma \times \mathbb{R}_{\geq 0}, T)$, where
 \begin{align*}
-	&S := \{(\ell, v) \in L \times \mathbb{R}_{\geq 0}, v \models I(\ell)\}, \quad s_0 := (\ell_0, \text{\bf 0}_C),\\
+	&S := \{(\ell, v) \in L \times \mathbb{R}_{\geq 0}^C\ |\ v \models I(\ell)\}, \quad s_0 := (\ell_0, \text{\bf 0}_C),\\
 	&T := \{(\ell, v) \xrightarrow{d, a} (\ell', (v+d)[r]) \ | \ d \in \mathbb{R}_{\geq 0}, \forall d' \in [0, d], v + d' \models I(\ell) \land \exists \ell \xrightarrow{\varphi, a, r} \ell' \in E, v + d \models \varphi \}
 \end{align*}
 
-The valuation $(v+d)[r]$ is the valuation obtained by adding the value $d$ to all clocks of $v$ -- $v$ is shifted by a delay $d$ -- in which all clocks of $r$ are reset to $0$.
+The valuation $(v+d)[r]$ is the valuation obtained by adding the value $d$ to the evaluation of $v$ on any clock -- $v$ is delayed by $d$ -- in which all clocks of $r$ are reset to $0$.
 
 %% Informal description of the semantics:
 % $S$ is the set of states | i.e.\ pairs of a location and a valuation such that the valuation is | satisfying the invariant and $s_0 := (\ell_0, \text{\bf 0}_C)$ is the inital state;
