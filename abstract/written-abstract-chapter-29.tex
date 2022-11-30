@@ -98,8 +98,8 @@ We say that a valuation $v$ over $C$ satisfies $x \odot k$ when $v(x) \odot k$, 
 A timed automaton is basically a finite automaton with (real-time) constraints on the states.
 The following formal definition is a reformulation of~\cite[Chapter 29.2, Definition 1]{handbook}.
 \begin{definition}\label{def:ta}
-	A \emph{Timed Automaton} (TA) $\mathcal{A}$ is the tuple $(L, l_0, C, \Sigma, I, E)$ where
-	$L$ is a finite set of \emph{locations} with initial location $l_0 \in L$,
+	A \emph{Timed Automaton} (TA) $\mathcal{A}$ is the tuple $(L, \ell_0, C, \Sigma, I, E)$ where
+	$L$ is a finite set of \emph{locations} with initial location $\ell_0 \in L$,
 	$C$ is a finite set of \emph{clocks},
 	$\Sigma$ is a finite set of \emph{actions},
 	$I \colon L \to \Phi(C)$ is an \emph{invariant mapping} and

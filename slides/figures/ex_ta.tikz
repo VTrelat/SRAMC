@@ -1,0 +1,26 @@
+\begin{tikzpicture}
+	\begin{pgfonlayer}{nodelayer}
+		\node [style=white] (0) at (-10, 0) {\color{green!70!black}$x_1\leq 1$};
+		\node [style=white] (1) at (0, 0) {\color{green!70!black}$y_1 \leq 1$};
+		\node [style=white] (2) at (10, 0) {\color{green!70!black}$y_1 \leq 2$};
+		\node [style=none] (3) at (-13, 0) {};
+		\node [style=none] (4) at (-5, -0.5) {{\color{red}$x_1 = 1$},  {\color{blue!80!black}$y_1 := 0$}};
+		\node [style=none] (5) at (5, -0.5) {{\color{red}$y_1 = 1$}};
+		\node [style=none] (6) at (0, 5) {{\color{blue!80!black}$x_1 := 0$}};
+		\node [style=none] (7) at (-5, 2.5) {{\color{red}$y_1 < 1$},  {\color{blue!80!black}$x_1 := 0$}};
+		\node [style=none] (8) at (-5, 0.5) {$a$};
+		\node [style=none] (9) at (5, 0.5) {$a, b$};
+		\node [style=none] (10) at (-5, 4) {$b$};
+		\node [style=none] (11) at (0, 6.25) {$a, b$};
+		\node [style=none] (12) at (-10, -3.5) {$b$};
+		\node [style=none] (13) at (-10, -4.75) {{\color{blue!80!black}$x_1 := 0$}, {\color{blue!80!black}$y_1 := 0$}};
+	\end{pgfonlayer}
+	\begin{pgfonlayer}{edgelayer}
+		\draw [style=right arrow, thick] (0) to (1);
+		\draw [style=right arrow, thick] (1) to (2);
+		\draw [style=right arrow, thick] (3.center) to (0);
+		\draw [style=right arrow, bend left=300, thick] (1) to (0);
+		\draw [style=right arrow, bend left=270, looseness=0.75, thick] (2) to (0);
+		\draw [style=right arrow, in=-60, out=-120, loop, thick] (0) to ();
+	\end{pgfonlayer}
+\end{tikzpicture}

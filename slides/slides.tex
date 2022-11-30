@@ -13,6 +13,8 @@
 
 \input{graphs.tikzstyles}
 
+% \usefonttheme{serif}
+
 \theoremstyle{definition}
 
 \setbeamercovered{invisible}
@@ -25,6 +27,7 @@
 \useoutertheme{tree} % Alternatively: miniframes, infolines, split
 \useinnertheme{circles}
 
+
 \setbeamertemplate{headline}
 {%
   \leavevmode%
@@ -35,6 +38,15 @@
     \hbox to .5\paperwidth{\hfil\insertsubsectionhead\hfil}
   \end{beamercolorbox}%
 }
+
+\setbeamertemplate{section in toc}{%
+  \inserttocsectionnumber.~\inserttocsection}
+\setbeamercolor{section in toc}{fg=black}
+\setbeamercolor{subsection in toc}{fg=structure}
+\setbeamertemplate{subsection in toc}{%
+  \hspace{1.2em}{\tiny\inserttocsectionnumber.\inserttocsubsectionnumber}~\small\inserttocsubsection\par}
+
+% \setbeamertemplate{bibliography item}{\insertbiblabel.~\insertbibitem}
 
 \definecolor{lightbrown}{RGB}{207, 161, 118}
 
@@ -52,10 +64,64 @@
 \end{frame}
 
 \begin{frame}
-  An example of figure:
-  \begin{figure}
-    \ctikzfig{fig1}
-  \end{figure}
+\tableofcontents
+\end{frame}
+
+\section{Timed Automata}
+\subsection{Preliminaries}
+
+\begin{frame}
+  \tableofcontents[currentsection]
+\end{frame}
+
+\begin{frame}
+  Set of \emph{time values}: $\mathbb{R}_{\geq 0}$
+  \vfill
+  \emph{Timed words} over $\Sigma \times \mathbb{R}_{\geq 0}$
+  \vfill
+  Set of \emph{valuations} over a set of clocks $C$: $\mathbb{R}_{\geq 0}^C$
+  \vfill
+  \emph{Constraints} over $C$: $\varphi ::= x \odot k\ |\ \varphi \land \varphi$ where $x \in C$, $k \in \mathbb{Z}$ and $\odot \in \{<, \leq, =, \geq, >\}$
+  \vfill
+  Set of valuations \emph{satisfying} $\varphi$: $[\![\varphi]\!]_C = \{v \in \mathbb{R}_{\geq 0}^C\ |\ v \models \varphi\}$
+\end{frame}
+
+
+\subsection{Timed Automata}
+
+\begin{frame}
+  \begin{definition}
+    A \emph{Timed Automaton} (TA) $\mathcal{A}$ is the tuple $(L, \ell_0, C, \Sigma, I, E)$ where:
+    \begin{itemize}
+      \item $L$ is a finite set of \emph{locations} with initial location $\ell_0 \in L$
+      \item $C$ is a finite set of \emph{clocks}
+      \item $\Sigma$ is a finite set of \emph{actions}
+      \item $I \colon L \to \Phi(C)$ is an \emph{invariant mapping}
+      \item $E \subseteq L \times \Phi(C) \times \Sigma \times 2^{C} \times L$ is a set of edges.
+    \end{itemize}
+  \end{definition}
+  \vfill
+  Edges are denoted by $\ell \xrightarrow{\varphi, a, r} \ell'$.
+\end{frame}
+\begin{frame}
+  Example of a TA with 3 locations, 2 clocks and 2 actions (letters):
+  \ctikzfig{ex_ta}
+\end{frame}
+
+\subsection{Regions and zones}
+\subsection{Extensions}
+
+\section{Model Checking Real-Time Systems}
+\subsection{TLTL}
+\subsection{Timed Games}
+
+\section{Language-Theoretic Properties}
+
+\section{References}
+\begin{frame}{References}
+  \setbeamertemplate{bibliography item}{\insertbiblabel}
+  \bibliographystyle{abbrv}
+  \bibliography{../abstract/ref}
 \end{frame}
 
 \end{document}
