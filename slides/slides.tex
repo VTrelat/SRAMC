@@ -1,6 +1,6 @@
 \documentclass{beamer}
 \usepackage{graphicx}
-\usepackage{amsmath, amsthm, amsfonts, amssymb, mathrsfs}
+\usepackage{amsmath, amsthm, amsfonts, amssymb, mathrsfs, mathtools}
 \usepackage{textcomp} % straigth apos
 \usepackage{tikz}
 \usepackage{verbatim}
@@ -22,6 +22,8 @@
 \setbeamertemplate{theorems}[numbered]
 \setbeamertemplate{lemma}[numbered]
 \newtheorem{remark}{Remark}
+
+\newcommand{\xra}[1]{\overset{#1}{\rightsquigarrow}}
 
 \usetheme{Madrid}
 \useoutertheme{tree} % Alternatively: miniframes, infolines, split
@@ -96,8 +98,8 @@
       \item $L$ is a finite set of \emph{locations} with initial location $\ell_0 \in L$
       \item $C$ is a finite set of \emph{clocks}
       \item $\Sigma$ is a finite set of \emph{actions}
-      \item $I \colon L \to \Phi(C)$ is an \emph{invariant mapping}
-      \item $E \subseteq L \times \Phi(C) \times \Sigma \times 2^{C} \times L$ is a set of edges.
+      \item $I \colon L \to \varPhi(C)$ is an \emph{invariant mapping}
+      \item $E \subseteq L \times \varPhi(C) \times \Sigma \times 2^{C} \times L$ is a set of edges.
     \end{itemize}
   \end{definition}
   \vfill
@@ -141,25 +143,6 @@
     \begin{cases}
       v'(x) = {\color{red}0}\\
       v'(y) = {\color{red}1.3}
-    \end{cases}
-    }
-  \end{equation*}
-}
-\onslide<5->{
-  \begin{equation*}
-    \begin{cases}
-      v(x) = {\color{red}1.2}\\
-      v(y) = {\color{red}0.8}
-    \end{cases}
-    \onslide<6->{
-    \quad
-    (\ell, v) \xrightarrow{{\color{red}1.2},\ a} (\ell', v')
-    \quad
-    }
-    \onslide<7->{
-    \begin{cases}
-      v'(x) = {\color{red}0}\\
-      v'(y) = {\color{red}2}
     \end{cases}
     }
   \end{equation*}
@@ -233,6 +216,66 @@
 \end{frame}
 
 \subsection{Regions and zones}
+
+\begin{frame}
+  \tableofcontents[currentsection, currentsubsection]
+\end{frame}
+
+\begin{frame}{Region Equivalence}
+  \onslide<1->{
+  \begin{definition}
+  \small
+  Two valuations $v, v' \in \mathbb{R}_{\geq 0}^C$ are region equivalent, i.e\ $v \cong_M v'$ iff:
+  \begin{itemize}
+    \item $\forall x \in C, \lfloor v(x) \rfloor = \lfloor v'(x) \rfloor \ \lor \ v(x), v'(x) > M_x$
+    \item $\forall x \in C, \langle v(x) \rangle = 0 \Leftrightarrow \langle v'(x) \rangle = 0 \ \lor \ v(x) \geq M_x$
+    \item $\forall x, y \in C, \langle v(x) \rangle \leq \langle v(y) \rangle \Leftrightarrow \langle v'(x) \rangle \leq \langle v'(y) \rangle \ \lor \ v(x) > M_x \ \lor \ v(y) > M_y$
+  \end{itemize}
+\end{definition}
+  }
+  \onslide<2->{
+    \begin{center}
+      \includegraphics[height=10em]{../img/TAreg.png}
+    \end{center}
+  }
+\end{frame}
+
+\begin{frame}
+\begin{definition}[Region Automaton]
+  $\mathcal{R}_{\cong_M}(A) = (S, s_0, \Sigma, T)$ is the \emph{region automaton} of $A$, where:
+  \begin{itemize}
+    \item $S := (L \times \mathbb{R}_{\geq 0}^C)_{/\cong_M},\ s_0 := \text{\bf 0}_C$
+    \item $T := \{[\ell, v]_{\cong_M} \xrightarrow{a} [\ell', v']_{\cong_M}\ |\ \exists d \in \mathbb{R}_{\geq 0}, (\ell, v) \xrightarrow{d, a} (\ell', v')\}$
+  \end{itemize}
+\end{definition}
+\begin{itemize}
+  \item<2> $\left| S \right|$ is exponential in the number of clocks and in the maximal constants of the timed automaton
+  \item<2> Is there a way to reduce the number of states?
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+  \begin{definition}[Zone]
+    A set of valuations $Z \subseteq \mathbb{R}_{\geq 0}^C$ is a zone iff:
+    $\exists \varphi \in \varPhi_d(C), Z = [\![\varphi]\!]_C$
+    
+    In this case, we define:
+    \begin{itemize}
+      \item the \emph{delay} of $Z$: $Z^\uparrow \triangleq \{ v + d \ |\ V \in Z \land d \in \mathbb{R}_{\geq 0}\}$
+      \item the \emph{reset} of $Z$: $Z[r] \triangleq \{ v[r] \ |\ v \in Z\}$ for $r \subseteq C$
+    \end{itemize}
+  \end{definition}
+  \small
+  \begin{definition}[Zone automaton]
+    The \emph{zone automaton} $[\![A]\!]_Z$ of $A$ is the tuple $(S, s_0, \Sigma \cup \{\delta\}, T)$, where:\\
+      $$S := \{ (\ell, Z)\ |\ \ell \in L, Z \in \mathbb{R}_{\geq 0}^C\ \text{is a zone}\},\quad s_0 := (\ell_0, [\![\text{\bf 0}_C]\!])$$
+    \begin{align*}
+      &T := \{ (\ell, Z) \xra{\delta} (\ell', Z^\uparrow \cap [\![I(\ell)]\!]_C)\} \cup \\
+      &\{ (\ell, Z) \xra{a} (\ell', (Z \cap [\![I(\ell)]\!]_C)[r] \cap [\![I(\ell')]\!]_C) \ |\ \ell \xrightarrow{\varphi, a, r} \ell' \in E\}
+    \end{align*}
+  \end{definition}
+\end{frame}
+
 \subsection{Extensions}
 
 \section{Model Checking Real-Time Systems}
