@@ -9,11 +9,15 @@
 \usepackage{subfig}
 \usepackage[ruled,vlined, linesnumbered]{algorithm2e}
 \usepackage{algorithmic,float}
-
+\usepackage[
+  % audience=short
+  audience=long  
+]{beameraudience}
 
 \input{graphs.tikzstyles}
+\usetikzlibrary{decorations.pathreplacing}
 
-% \usefonttheme{serif}
+\usefonttheme{serif}
 
 \theoremstyle{definition}
 
@@ -71,10 +75,6 @@
 
 \section{Timed Automata}
 \subsection{Preliminaries}
-
-\begin{frame}
-  \tableofcontents[currentsection]
-\end{frame}
 
 \begin{frame}
   Set of \emph{time values}: $\mathbb{R}_{\geq 0}$
@@ -255,6 +255,7 @@
 \end{frame}
 
 \begin{frame}
+  \small
   \begin{definition}[Zone]
     A set of valuations $Z \subseteq \mathbb{R}_{\geq 0}^C$ is a zone iff:
     $\exists \varphi \in \varPhi_d(C), Z = [\![\varphi]\!]_C$
@@ -267,20 +268,162 @@
   \end{definition}
   \small
   \begin{definition}[Zone automaton]
-    The \emph{zone automaton} $[\![A]\!]_Z$ of $A$ is the tuple $(S, s_0, \Sigma \cup \{\delta\}, T)$, where:\\
-      $$S := \{ (\ell, Z)\ |\ \ell \in L, Z \in \mathbb{R}_{\geq 0}^C\ \text{is a zone}\},\quad s_0 := (\ell_0, [\![\text{\bf 0}_C]\!])$$
+    The \emph{zone automaton} $[\![A]\!]_Z$ of $A$ is the tuple $(S, s_0, \Sigma \cup \{\delta\}, T)$, where:
     \begin{align*}
-      &T := \{ (\ell, Z) \xra{\delta} (\ell', Z^\uparrow \cap [\![I(\ell)]\!]_C)\} \cup \\
-      &\{ (\ell, Z) \xra{a} (\ell', (Z \cap [\![I(\ell)]\!]_C)[r] \cap [\![I(\ell')]\!]_C) \ |\ \ell \xrightarrow{\varphi, a, r} \ell' \in E\}
+      &S := \{ (\ell, Z)\ |\ \ell \in L, Z \in \mathbb{R}_{\geq 0}^C\ \text{is a zone}\},\quad s_0 := (\ell_0, [\![\text{\bf 0}_C]\!]_C)\\
+      &T := \{ (\ell, Z) \xra{\delta} (\ell, Z^\uparrow \cap [\![I(\ell)]\!]_C)\} \cup \\
+      &\{ (\ell, Z) \xra{a} (\ell', (Z \cap [\![\varphi]\!]_C)[r] \cap [\![I(\ell')]\!]_C) \ |\ \ell \xrightarrow{\varphi, a, r} \ell' \in E\}
     \end{align*}
   \end{definition}
+  $\rightarrow$ Normalisation ($\simeq$ quotienting), shortest-path-closed DBM extrapolation
 \end{frame}
 
+% Remark: if the TA does not contain diagonal constraints, the reachability problem on the TA is equivalent to the reachability problem on the ZA. Otherwise, other normalization techniques are needed.
+
+\justfor{long}{
+\begin{frame}
+  \centering
+  \small
+  \begin{tikzpicture}
+    \node (sys) at (0, 0) {$
+        Z =
+        \begin{cases}
+          x_1 &\leq 3\\
+          x_1 - x_2 &\leq 10\\
+          x_1 - x_2 &\geq 4\\
+          x_1 - x_3 &\leq 2\\
+          x_3 - x_2 &\leq 2\\
+          x_3 &\geq -5
+        \end{cases}
+        $
+    };
+    \node [draw, circle] (x0) at (4, -1) {$x_0$};
+    \node [draw, circle] (x1) at (4, 1) {$x_1$};
+    \node [draw, circle] (x2) at (6, 1) {$x_2$};
+    \node [draw, circle] (x3) at (6, -1) {$x_3$};
+    \draw[->] (x1) -- (x0) node[midway, left] {$3$};
+    \draw[->] (x1) to [out=10, in=170] node[midway, above] {$10$} (x2);
+    \draw[->] (x2) to [out=-170, in=-10] node[midway, below] {$4$} (x1);
+    \draw[->] (x3) -- (x2) node[midway, left] {$2$};
+    \draw[->] (x1) to [out=-45, in=135] node[midway, left] {$2$} (x3);
+    \draw[->] (x0) to node[midway, below] {$5$} (x3);
+  \end{tikzpicture}
+  \\
+  \includegraphics[width=.85\textwidth]{../img/shortest_path.png}
+\end{frame}
+}
+
+% just for long?
 \subsection{Extensions}
+\begin{frame}
+  \tableofcontents[currentsection, currentsubsection]
+\end{frame}
+
+\begin{frame}
+  \small
+  Decidable extensions:
+  \begin{itemize}
+    \item \emph{diagonal constraints}: $x - y \odot k$
+    \item \emph{updatable} TA: clocks can be reset to any natural number ($x := k \in \mathbb{Z}$) or can be synchronized with another clock ($x := y$)
+    \item \emph{urgency} constraints: some locations must be left immediately
+  \end{itemize}
+  \vfill
+  Undecidable extensions:
+  \begin{itemize}
+    \item \emph{linear} constraints: $\lambda x + \mu y \leq k$
+    \item updates such as $x := x + k$ or $x :> k$ (non-determinism)
+    \item \emph{stopwatch} automata
+    \item \emph{hybrid} automata
+    \only<1>{\item ...}\only<2>{\item pretty much everything else you can think of}
+
+  \end{itemize}
+\end{frame}
 
 \section{Model Checking Real-Time Systems}
-\subsection{TLTL}
+\subsection{Timed Temporal Logic}
+
+\begin{frame}
+  \tableofcontents[currentsection, currentsubsection]
+\end{frame}
+
+\begin{frame}
+  \small
+  \begin{definition}[Metric Temporal Logic]
+    Given a set of atomic propositions $P$, the formulas of MTL are defined for any time interval $I$ with the \emph{time-constrained until} operator $\text{\bf U}_I$ as follows:
+    \begin{equation*}
+      \varphi ::= p \in P\ |\ \neg \varphi\ |\ \varphi \land \varphi\ |\ \varphi \text{\bf U}_I \varphi
+    \end{equation*}
+  \end{definition}
+  \vfill
+  The \emph{constrained always} $\square_I$ and \emph{constrained eventually} $\lozenge_I$ operators can be defined with $\text{\bf U}_I$ in a similar way as in LTL, namely:
+  \begin{align*}
+    \lozenge_I \varphi &\triangleq \top \text{\bf U}_I \varphi\\
+    \square_I \varphi &\triangleq \neg \lozenge_I \neg \varphi
+  \end{align*}
+  \vfill
+  \onslide<2->{
+    \centering
+    \Large
+    \color{red}
+    \fbox{What is $\text{\bf U}_I$?!}
+    \onslide<3->{
+      \color{black}
+      $\rightarrow$ give its semantics
+    }
+  }
+\end{frame}
+
+\begin{frame}
+\textbf{Continuous semantics}:
+$$f \models \varphi_1 \text{\bf U}_I \varphi_2 \quad \text{iff} \quad \exists t \in I, f^t \models \varphi_2 \land \forall u \in (0, t), f^u \models \varphi_1$$
+\onslide<2->{
+\centering
+\begin{tikzpicture}
+  \node[label=below:$time$] at (8, 0) {};
+  \draw[-] (0,0) -- (1,0);
+  \draw (1, 0) [|-|]        -- (6, 0) node[below=10pt, midway] {$I$};
+  \draw[->] (6,0) -- (8,0);
+  \draw (5,2.8pt) -- (5,-2.8pt) node[below, midway] {$t$};
+  {
+  \color{blue}
+  \draw[decorate,decoration={brace,amplitude=5pt}] (1,0.45) -- (5,0.45)
+    node[anchor=south,midway,above=4pt] {$\varphi_1$ is satisfied};
+  }
+  {
+  \color{red}
+  \draw[<-, thick] (5,2.8pt) -- (6, 1) node[pos=1,above] {$\varphi_2$ is satisfied};
+  }
+\end{tikzpicture}
+}
+\end{frame}
+
+\begin{frame}
+\textbf{Pointwise semantics}:
+Let $w = ((a_i, t_i))_{i \in \mathbb{N}}$ be a timed word over $2^P$.
+\begin{equation*}
+  w, i \models \varphi_1 \text{\bf U}_I \varphi_2 \quad \text{iff} \quad
+  \exists i < j < |w|,
+  \begin{cases}
+    w, j \models \varphi_2\ &\land \\
+    t_j - t_i \in I\ &\land \\
+    \forall i < k < j,\ w, k \models \varphi_1
+  \end{cases}
+\end{equation*}
+$<$Insert figure$>$
+\end{frame}
+
+\subsection{Some results}
+% Reachability for TA is PSPACE-complete
+% Model checking and satisfiability for LTL, over both the pointwise and continuous semantics, are PSPACE-complete.
+% Model checking and satisfiability for MTL in the pointwise semantics over finite words are decidable. Over infinite words, both problems are undecidable.
+% Model checking and satisfiability for MTL in the continuous semantics (over both finite and infinite words) are undecidable.
+% For both the pointwise and continuous semantics, model checking and satisfiability for MITL are EXPSPACE-complete, over both finite and infinite behaviors.
+% Satisfiability and model checking are PSPACE-complete for ECTL, in either the pointwise or continuous semantics.
+% Model checking and satisfiability for MTL over bounded time, in either the pointwise or continuous semantics, are EXPSPACE-complete.
+% TCTL model checking is PSPACE-complete and TCTL satisfiability is undecidable.
+
 \subsection{Timed Games}
+% The (time-optimal) reachability and safety games are decidable for timed games. They are EXPTIME-complete.
 
 \section{Language-Theoretic Properties}
 
