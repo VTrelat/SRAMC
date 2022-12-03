@@ -10,8 +10,8 @@
 \usepackage[ruled,vlined, linesnumbered]{algorithm2e}
 \usepackage{algorithmic,float}
 \usepackage[
-  % audience=short
-  audience=long  
+  audience=short
+  % audience=long  
 ]{beameraudience}
 
 \input{graphs.tikzstyles}
@@ -244,7 +244,7 @@
 \begin{definition}[Region Automaton]
   $\mathcal{R}_{\cong_M}(A) = (S, s_0, \Sigma, T)$ is the \emph{region automaton} of $A$, where:
   \begin{itemize}
-    \item $S := (L \times \mathbb{R}_{\geq 0}^C)_{/\cong_M},\ s_0 := [(\ell_0, \text{\bf 0}_C)]_{/\cong_M}$
+    \item $S := (L \times \mathbb{R}_{\geq 0}^C)_{/\cong_M},\ s_0 := [\ell_0, \text{\bf 0}_C]_{/\cong_M}$
     \item $T := \{[\ell, v]_{\cong_M} \xrightarrow{a} [\ell', v']_{\cong_M}\ |\ \exists d \in \mathbb{R}_{\geq 0}, (\ell, v) \xrightarrow{d, a} (\ell', v')\}$
   \end{itemize}
 \end{definition}
@@ -262,7 +262,7 @@
     
     In this case, we define:
     \begin{itemize}
-      \item the \emph{delay} of $Z$: $Z^\uparrow \triangleq \{ v + d \ |\ V \in Z \land d \in \mathbb{R}_{\geq 0}\}$
+      \item the \emph{delay} of $Z$: $Z^\uparrow \triangleq \{ v + d \ |\ v \in Z \land d \in \mathbb{R}_{\geq 0}\}$
       \item the \emph{reset} of $Z$: $Z[r] \triangleq \{ v[r] \ |\ v \in Z\}$ for $r \subseteq C$
     \end{itemize}
   \end{definition}
@@ -409,8 +409,34 @@ Let $w = ((a_i, t_i))_{i \in \mathbb{N}}$ be a timed word over $2^P$.
     \forall i < k < j,\ w, k \models \varphi_1
   \end{cases}
 \end{equation*}
-$<$Insert figure$>$
+\onslide<2->{
+\centering
+\begin{tikzpicture}
+  \small
+  \draw (0,0) -- (0,.5) node [left=1pt, midway] {$w$} -- (8,.5) -- (8,0) -- (0,0);
+  \draw (2,0) -- (2,.5) node [right=1pt, midway] {$i$} node [below right, pos=0] {$t_i$};
+  \draw (2.5,0) -- (2.5,.5);
+  \draw (6,0) -- (6,.5) node [right=1pt, midway] {$j$} node [below right, pos=0] {$t_j$};
+  \draw (6.5,0) -- (6.5,.5);
+  {
+  \color{blue}
+  \draw[decorate,decoration={brace,amplitude=5pt}] (2.5,0.55) -- (6,0.55)
+    node[anchor=south,midway,above=4pt] {$\varphi_1$ is satisfied};
+  }
+  {
+  \color{green!60!black}
+  \draw[decorate,decoration={brace,amplitude=5pt}] (6.5,-0.55) -- (2,-0.55)
+    node[anchor=north,midway,below=4pt] {$\Delta t \in I$};
+  }
+  {
+    \color{red}
+    \draw[<-, thick] (6.25,.5) -- (6.25, 1.1) node[pos=1, above] {$\varphi_2$ is satisfied};
+    }
+\end{tikzpicture}
+
+}
 \end{frame}
+
 
 \subsection{Some results}
 % Reachability for TA is PSPACE-complete
@@ -425,8 +451,11 @@ $<$Insert figure$>$
 \subsection{Timed Games}
 % The (time-optimal) reachability and safety games are decidable for timed games. They are EXPTIME-complete.
 
+\justfor{long}{
 \section{Language-Theoretic Properties}
+}
 
+\nocite{handbook,AlurDill}
 \section{References}
 \begin{frame}{References}
   \setbeamertemplate{bibliography item}{\insertbiblabel}
