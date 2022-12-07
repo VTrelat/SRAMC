@@ -10,8 +10,8 @@
 \usepackage[ruled,vlined, linesnumbered]{algorithm2e}
 \usepackage{algorithmic,float}
 \usepackage[
-  audience=short
-  % audience=long
+  % audience=short
+  audience=long
 ]{beameraudience}
 
 \input{graphs.tikzstyles}
@@ -82,20 +82,6 @@
 \end{frame}
 
 \section{Timed Automata}
-\subsection{Preliminaries}
-
-\begin{frame}
-  Set of \emph{time values}: $\mathbb{R}_{\geq 0}$
-  \vfill
-  \emph{Timed words} over $\Sigma \times \mathbb{R}_{\geq 0}$
-  \vfill
-  Set of \emph{valuations} over a set of clocks $C$: $\mathbb{R}_{\geq 0}^C$
-  \vfill
-  \emph{Constraints} over $C$: $\varphi ::= x \odot k\ |\ \varphi \land \varphi$ where $x \in C$, $k \in \mathbb{Z}$ and $\odot \in \{<, \leq, =, \geq, >\}$
-  \vfill
-  Set of valuations \emph{satisfying} $\varphi$: $[\![\varphi]\!]_C = \{v \in \mathbb{R}_{\geq 0}^C\ |\ v \models \varphi\}$
-\end{frame}
-
 
 \subsection{Timed Automata}
 
@@ -249,6 +235,18 @@
   \small
   \ctikzfig{ex_ta}
   $$ \left(\ell_0, \vect{0.6}{1}\right) \xrightarrow{0.4, a} \left(\ell_1, \vect{1}{0}\right) \xrightarrow{1,b} \left(\ell_2, \vect{2}{1}\right) \xrightarrow{0.6, a} \left(\ell_0, \vect{0}{1.6}\right) \xrightarrow{0, b} \left(\ell_0, \vect{0}{0}\right)$$
+\end{frame}
+
+\subsection{Reachability}
+\begin{frame}
+  \fbox{
+  Reachability and language emptiness for TA are PSPACE-complete
+  }
+  \vfill
+  Universality, inclusion and equivalence are all undecidable.
+  
+  \vfill
+  It can be proved with the \emph{region automaton} construction: it has exponentially larger size, but checking a reachability property can be done on the fly, hence this can be done in polynomial space.
 \end{frame}
 
 \subsection{Regions and zones}
@@ -435,10 +433,6 @@
     \Large
     \color{red}
     \fbox{What is $\text{\bf U}_I$?!}
-    \onslide<3->{
-      \color{black}
-      $\rightarrow$ give its semantics
-    }
   }
 \end{frame}
 }
@@ -546,15 +540,13 @@ Let $w = ((a_i, t_i))_{i \in \mathbb{N}}$ be a timed word over $2^P$.
 \begin{frame}
   \small
   \begin{itemize}
-    \item<1-> Reachability and language emptiness for TA are PSPACE-complete
+    \item<1-> MC and SAT for ``classical'' LTL are PSPACE-complete over both semantics
     \vfill
-    \item<2-> MC and SAT for LTL are PSPACE-complete over both semantics
-    \vfill
-    \item<3-> MC and SAT for MTL in the pointwise semantics are decidable over finite words only, and are undecidable in the continuous semantics
+    \item<2-> MC and SAT for MTL in the pointwise semantics are decidable over finite words only, and are undecidable in the continuous semantics
 
     $\rightarrow$ In some subsets of MTL, we can recover decidability
     \vfill
-    \item<4-> MC is PSPACE-complete and SAT is undecidable for TCTL
+    \item<3-> MC is PSPACE-complete and SAT is undecidable for TCTL
   \end{itemize}
 \end{frame}
 }
@@ -562,11 +554,7 @@ Let $w = ((a_i, t_i))_{i \in \mathbb{N}}$ be a timed word over $2^P$.
 \begin{frame}
   \verysmall
   \begin{itemize}
-    \item Reachability and language emptiness for TA are PSPACE-complete
-
-    {\color{blue}Universality, inclusion and equivalence are all undecidable.
-    The RA has exponentially larger size, but checking a reachability property can be done on the fly, hence this can be done in polynomial space.}
-    \item MC and SAT for LTL are PSPACE-complete over both semantics
+    \item MC and SAT for ``classical'' LTL are PSPACE-complete over both semantics
 
     {\color{blue}The PSPACE upper bound can be established by translating the negated formula to a Büchi automaton, and performing an on-the-fly reachability check on the product of this automaton with the region graph of the model.}
     \item MC and SAT for MTL in the pointwise semantics are decidable over finite words only, and are undecidable in the continuous semantics
@@ -614,6 +602,7 @@ Timed games by example:
     \\
     \tiny{Figure taken from \cite{handbook}}
   \end{figure}
+  \onslide<2>{
   \begin{tabular}{|ccc|ccc|}
     \hline
     $(\ell_1, v)$ & $\rightarrow$ &
@@ -639,6 +628,7 @@ Timed games by example:
     \end{cases}$ \\
     \hline
   \end{tabular}
+  }
 \end{center}
 \end{frame}
 
@@ -678,7 +668,7 @@ Remarks:
   \frametitle{Ongoing challenges}
   \begin{itemize}
     \item Robustness and implementability: reconcile the semantics of TA with the models they represent
-    \item Statistical model checking: stocastic TA
+    \item Statistical model checking: stochastic TA
     \item Timed Games: extensions, e.g. where the players have their own objectives
   \end{itemize}
 \end{frame}
