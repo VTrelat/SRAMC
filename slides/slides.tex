@@ -11,7 +11,7 @@
 \usepackage{algorithmic,float}
 \usepackage[
   audience=short
-  % audience=long  
+  % audience=long
 ]{beameraudience}
 
 \input{graphs.tikzstyles}
@@ -28,6 +28,14 @@
 \newtheorem{remark}{Remark}
 
 \newcommand{\xra}[1]{\overset{#1}{\rightsquigarrow}}
+\newcommand{\verysmall}{\scriptsize}
+\newcommand{\vect}[2]{%
+\begin{bmatrix}
+    #1 \\
+    #2
+\end{bmatrix}
+}
+
 
 \usetheme{Madrid}
 \useoutertheme{tree} % Alternatively: miniframes, infolines, split
@@ -99,7 +107,8 @@
       \item $C$ is a finite set of \emph{clocks}
       \item $\Sigma$ is a finite set of \emph{actions}
       \item $I \colon L \to \varPhi(C)$ is an \emph{invariant mapping}
-      \item $E \subseteq L \times \varPhi(C) \times \Sigma \times 2^{C} \times L$ is a set of edges.
+      \item $E \subseteq L \times \varPhi(C) \times \Sigma \times 2^{C} \times L$ is a set of edges
+      \item a set $F$ of \emph{target locations} is generally specified
     \end{itemize}
   \end{definition}
   \vfill
@@ -131,18 +140,37 @@
 \onslide<2->{
   \begin{equation*}
     \begin{cases}
-      v(x) = {\color{red}1.2}\\
-      v(y) = {\color{red}0.8}
+      v(x) = {\color{red}3.4}\\
+      v(y) = {\color{red}0.9}
     \end{cases}
     \onslide<3->{
     \quad
-    (\ell, v) \xrightarrow{{\color{red}0.5},\ a} (\ell', v')
+    (\ell, v) \xrightarrow{\ \ a\ \ } (\ell', v')
     \quad
     }
     \onslide<4->{
     \begin{cases}
       v'(x) = {\color{red}0}\\
-      v'(y) = {\color{red}1.3}
+      v'(y) = {\color{red}0.9}
+    \end{cases}
+    }
+  \end{equation*}
+}
+\onslide<5->{
+  \begin{equation*}
+    \begin{cases}
+      v(x) = {\color{red}1.2}\\
+      v(y) = {\color{red}0.2}
+    \end{cases}
+    \onslide<6->{
+    \quad
+    (\ell, v) \xrightarrow{{\color{red}0.5},\ a} (\ell', v')
+    \quad
+    }
+    \onslide<7->{
+    \begin{cases}
+      v'(x) = {\color{red}0}\\
+      v'(y) = {\color{red}0.7}
     \end{cases}
     }
   \end{equation*}
@@ -198,10 +226,11 @@
   provided that:
   $$\ell \xrightarrow{\varphi, a, r} \ell'\ \text{is a transition in the TA}$$
   $$\forall t \in [0, d], \ v + t \models I(\ell)$$
-  $$v + d \models I(\ell')$$
+  $$(v + d)[r] \models I(\ell')$$
   }
 \end{frame}
 
+\justfor{long}{
 \begin{frame}
   \frametitle{Operational Semantics}
 \begin{definition}
@@ -214,6 +243,13 @@
   \end{align*}
 \end{definition}
 \end{frame}
+}
+
+\begin{frame}
+  \small
+  \ctikzfig{ex_ta}
+  $$ \left(\ell_0, \vect{0.6}{1}\right) \xrightarrow{0.4, a} \left(\ell_1, \vect{1}{0}\right) \xrightarrow{1,b} \left(\ell_2, \vect{2}{1}\right) \xrightarrow{0.6, a} \left(\ell_0, \vect{0}{1.6}\right) \xrightarrow{0, b} \left(\ell_0, \vect{0}{0}\right)$$
+\end{frame}
 
 \subsection{Regions and zones}
 
@@ -221,22 +257,25 @@
   \tableofcontents[currentsection, currentsubsection]
 \end{frame}
 
-\begin{frame}{Region Equivalence}
+\begin{frame}
   \onslide<1->{
+    \begin{center}
+      \includegraphics[height=8.4em]{../img/TAreg.png}
+    \end{center}
+  }
+  \onslide<2->{
   \begin{definition}
   \small
   Two valuations $v, v' \in \mathbb{R}_{\geq 0}^C$ are region equivalent, i.e\ $v \cong_M v'$ iff:
   \begin{itemize}
-    \item $\forall x \in C, \lfloor v(x) \rfloor = \lfloor v'(x) \rfloor \ \lor \ v(x), v'(x) > M_x$
-    \item $\forall x \in C, \langle v(x) \rangle = 0 \Leftrightarrow \langle v'(x) \rangle = 0 \ \lor \ v(x) \geq M_x$
-    \item $\forall x, y \in C, \langle v(x) \rangle \leq \langle v(y) \rangle \Leftrightarrow \langle v'(x) \rangle \leq \langle v'(y) \rangle \ \lor \ v(x) > M_x \ \lor \ v(y) > M_y$
+    \item<3-> $\forall x \in C, \lfloor v(x) \rfloor = \lfloor v'(x) \rfloor \ \lor \ v(x), v'(x) > M_x$\\
+    {\verysmall\color{blue}their integral parts on any clock are equal}
+    \item<4-> $\forall x \in C, \langle v(x) \rangle = 0 \Leftrightarrow \langle v'(x) \rangle = 0 \ \lor \ v(x) \geq M_x$\\
+    {\verysmall\color{blue}their fractional parts on any clock are simultaneously equal to zero}
+    \item<5-> $\forall x, y \in C, \langle v(x) \rangle \leq \langle v(y) \rangle \Leftrightarrow \langle v'(x) \rangle \leq \langle v'(y) \rangle \ \lor \ v(x) > M_x \ \lor \ v(y) > M_y$\\
+    {\verysmall\color{blue}the order of their fractional parts on any two clocks is preserved}
   \end{itemize}
 \end{definition}
-  }
-  \onslide<2->{
-    \begin{center}
-      \includegraphics[height=10em]{../img/TAreg.png}
-    \end{center}
   }
 \end{frame}
 
@@ -256,6 +295,38 @@
 
 \begin{frame}
   \small
+  Zone: a set of valuations satisfying a constraint over $C$, e.g.\ $[\![\varphi]\!]_C$.
+  \begin{center}
+    \begin{tikzpicture}
+      \node [style=white, align=center] (0) at (-2, 0) {$\ell$\\$I(\ell)$};
+      \node [style=white, align=center] (1) at (2, 1) {$\ell'$\\$I(\ell')$};
+      \draw [->] (0) to [in=-180, out=0] node [midway, below=4pt, rotate=33] {$\varphi, a, r$} (1);
+      \draw [->] (0) to [in=-160, out=160, loop] (0);
+      \only<2>{\draw [->, very thick, color=green!80!black] (0) to [in=-160, out=160, loop] (0);}
+      \only<3>{\draw [->, very thick, color=green!80!black] (0) to [in=-180, out=0] (1);}
+    \end{tikzpicture}
+  \end{center}
+  \begin{itemize}
+    \item<2-> Wait in $\ell$ for a delay $d$ to elapse
+    \begin{itemize}
+      \item<4-> $Z$ must be ``delayed'' (transition to the upward closure of $Z$)
+      \item<4-> $I(\ell)$ must be satisfied over the whole delay
+    \end{itemize}
+    \item<3-> Take the transition to $\ell'$ (without any delay)
+    \begin{itemize}
+      \item<5-> $\varphi$ must be satisfied
+      \item<5-> $Z$ must be ``reset'' w.r.t.\ $r$
+      \item<5-> $I(\ell')$ must be satisfied eventually
+    \end{itemize}
+  \end{itemize}
+  \onslide<6->{
+    Need to be normalised!
+  }
+\end{frame}
+
+\justfor{long}{
+\begin{frame}
+  \small
   \begin{definition}[Zone]
     A set of valuations $Z \subseteq \mathbb{R}_{\geq 0}^C$ is a zone iff:
     $\exists \varphi \in \varPhi_d(C), Z = [\![\varphi]\!]_C$
@@ -270,13 +341,14 @@
   \begin{definition}[Zone automaton]
     The \emph{zone automaton} $[\![A]\!]_Z$ of $A$ is the tuple $(S, s_0, \Sigma \cup \{\delta\}, T)$, where:
     \begin{align*}
-      &S := \{ (\ell, Z)\ |\ \ell \in L, Z \in \mathbb{R}_{\geq 0}^C\ \text{is a zone}\},\quad s_0 := (\ell_0, [\![\text{\bf 0}_C]\!]_C)\\
+      &S := \{ (\ell, Z)\ |\ \ell \in L, Z \in \mathbb{R}_{\geq 0}^C\ \text{is a zone}\},\quad s_0 := (\ell_0, \{\text{\bf 0}_C\})\\
       &T := \{ (\ell, Z) \xra{\delta} (\ell, Z^\uparrow \cap [\![I(\ell)]\!]_C)\} \cup \\
       &\{ (\ell, Z) \xra{a} (\ell', (Z \cap [\![\varphi]\!]_C)[r] \cap [\![I(\ell')]\!]_C) \ |\ \ell \xrightarrow{\varphi, a, r} \ell' \in E\}
     \end{align*}
   \end{definition}
   $\rightarrow$ Normalisation ($\simeq$ quotienting), shortest-path-closed DBM extrapolation
 \end{frame}
+}
 
 % Remark: if the TA does not contain diagonal constraints, the reachability problem on the TA is equivalent to the reachability problem on the ZA. Otherwise, other normalization techniques are needed.
 
@@ -346,6 +418,31 @@
   \tableofcontents[currentsection, currentsubsection]
 \end{frame}
 
+\justfor{short}{
+\begin{frame}
+  \small
+  \begin{definition}[Metric Temporal Logic]
+    Given a set of atomic propositions $P$, the formulas of MTL are defined for any time interval $I$ with the \emph{time-constrained until} operator $\text{\bf U}_I$ as follows:
+    \begin{equation*}
+      \varphi ::= p \in P\ |\ \neg \varphi\ |\ \varphi \land \varphi\ |\ \varphi \text{\bf U}_I \varphi
+    \end{equation*}
+  \end{definition}
+  \vfill
+  The \emph{constrained always} $\square_I$ and \emph{constrained eventually} $\lozenge_I$ operators can be defined with $\text{\bf U}_I$ in a similar way as in LTL.
+  \vfill
+  \onslide<2->{
+    \centering
+    \Large
+    \color{red}
+    \fbox{What is $\text{\bf U}_I$?!}
+    \onslide<3->{
+      \color{black}
+      $\rightarrow$ give its semantics
+    }
+  }
+\end{frame}
+}
+\justfor{long}{
 \begin{frame}
   \small
   \begin{definition}[Metric Temporal Logic]
@@ -372,6 +469,7 @@
     }
   }
 \end{frame}
+}
 
 \begin{frame}
 \textbf{Continuous semantics}:
@@ -402,11 +500,11 @@ $$f \models \varphi_1 \text{\bf U}_I \varphi_2 \quad \text{iff} \quad \exists t 
 Let $w = ((a_i, t_i))_{i \in \mathbb{N}}$ be a timed word over $2^P$.
 \begin{equation*}
   w, i \models \varphi_1 \text{\bf U}_I \varphi_2 \quad \text{iff} \quad
-  \exists i < j < |w|,
+  \exists\ i < j < |w|,
   \begin{cases}
     w, j \models \varphi_2\ &\land \\
     t_j - t_i \in I\ &\land \\
-    \forall i < k < j,\ w, k \models \varphi_1
+    \forall\ i < k < j,\ w, k \models \varphi_1
   \end{cases}
 \end{equation*}
 \onslide<2->{
@@ -439,23 +537,154 @@ Let $w = ((a_i, t_i))_{i \in \mathbb{N}}$ be a timed word over $2^P$.
 
 
 \subsection{Some results}
-% Reachability for TA is PSPACE-complete
-% Model checking and satisfiability for LTL, over both the pointwise and continuous semantics, are PSPACE-complete.
-% Model checking and satisfiability for MTL in the pointwise semantics over finite words are decidable. Over infinite words, both problems are undecidable.
-% Model checking and satisfiability for MTL in the continuous semantics (over both finite and infinite words) are undecidable.
-% For both the pointwise and continuous semantics, model checking and satisfiability for MITL are EXPSPACE-complete, over both finite and infinite behaviors.
-% Satisfiability and model checking are PSPACE-complete for ECTL, in either the pointwise or continuous semantics.
-% Model checking and satisfiability for MTL over bounded time, in either the pointwise or continuous semantics, are EXPSPACE-complete.
-% TCTL model checking is PSPACE-complete and TCTL satisfiability is undecidable.
 
-\subsection{Timed Games}
-% The (time-optimal) reachability and safety games are decidable for timed games. They are EXPTIME-complete.
+\begin{frame}
+  \tableofcontents[currentsection, currentsubsection]
+\end{frame}
 
+\justfor{short}{
+\begin{frame}
+  \small
+  \begin{itemize}
+    \item<1-> Reachability and language emptiness for TA are PSPACE-complete
+    \vfill
+    \item<2-> MC and SAT for LTL are PSPACE-complete over both semantics
+    \vfill
+    \item<3-> MC and SAT for MTL in the pointwise semantics are decidable over finite words only, and are undecidable in the continuous semantics
+
+    $\rightarrow$ In some subsets of MTL, we can recover decidability
+    \vfill
+    \item<4-> MC is PSPACE-complete and SAT is undecidable for TCTL
+  \end{itemize}
+\end{frame}
+}
 \justfor{long}{
-\section{Language-Theoretic Properties}
+\begin{frame}
+  \verysmall
+  \begin{itemize}
+    \item Reachability and language emptiness for TA are PSPACE-complete
+
+    {\color{blue}Universality, inclusion and equivalence are all undecidable.
+    The RA has exponentially larger size, but checking a reachability property can be done on the fly, hence this can be done in polynomial space.}
+    \item MC and SAT for LTL are PSPACE-complete over both semantics
+
+    {\color{blue}The PSPACE upper bound can be established by translating the negated formula to a Büchi automaton, and performing an on-the-fly reachability check on the product of this automaton with the region graph of the model.}
+    \item MC and SAT for MTL in the pointwise semantics are decidable over finite words only, and are undecidable in the continuous semantics
+
+    {\color{blue}Decidability results are essentially obtained by translating MTL formulas into one-clock alternating timed automata, and rephrasing the model-checking or satisfiability problems as instances of language emptiness in one-clock alternating timed automata.
+    Continuous semantics is strictly more expressive!}
+
+    \begin{itemize}
+      \verysmall
+      \item MC and SAT for MTL over bounded time and MITL are EXPSPACE-complete for both semantics (over finite and infinite words)
+      \item MC and SAT for ECTL are PSPACE-complete for both semantics
+    \end{itemize}
+    \item MC is PSPACE-complete and SAT is undecidable for TCTL
+    
+    {\color{blue}The idea is to associate universal path-quantifiers with each temporal modality.}
+  \end{itemize}
+\end{frame}
 }
 
-\nocite{handbook,AlurDill}
+\subsection{Timed Games}
+\begin{frame}
+  \tableofcontents[currentsection, currentsubsection]
+\end{frame}
+\justfor{long}{
+\begin{frame}
+  \small
+  \begin{definition}
+    A \emph{timed game} is basically a deterministic TA $A_G = (L, \ell_0, C, \Sigma_c \cup \Sigma_u, I, E)$ where $\Sigma_c$ and $\Sigma_u$ are disjoint.
+  \end{definition}
+  \vfill
+  A \emph{strategy} over $[\![A_G]\!]$ is a mapping from finite runs to $\Sigma_c \cup \{\delta\}$.
+  \vfill
+  The outcome of a strategy is \emph{maximal} either if it stops in a target location or or if no controllable actions are available at its end.
+  \vfill
+  A strategy is \emph{winning for the reachability game} if any of its maximal outcome and leads to a target location, and \emph{winning for the safety game} if none of its outcomes is accepting.
+\end{frame}
+}
+
+\begin{frame}
+\small
+Timed games by example:
+\begin{center}
+  \begin{figure}
+    \includegraphics[width=.85\textwidth]{../img/game.png}
+    \\
+    \tiny{Figure taken from \cite{handbook}}
+  \end{figure}
+  \begin{tabular}{|ccc|ccc|}
+    \hline
+    $(\ell_1, v)$ & $\rightarrow$ &
+    $\begin{cases}
+      \delta \ \text{if}\ v(x) \leq 1\\
+      c_1 \ \text{if}\ v(x) = 1
+    \end{cases}$ &
+    $(\ell_2, v)$ & $\rightarrow$ &
+    $\begin{cases}
+      \delta \ \text{if}\ v(x) \leq 2\\
+      c_2 \ \text{if}\ v(x) \geq 2
+    \end{cases}$ \\
+    \hline
+    $(\ell_3, v)$ & $\rightarrow$ &
+    $\begin{cases}
+      \delta \ \text{if}\ v(x) < 1\\
+      c_3 \ \text{if}\ v(x) \geq 1
+    \end{cases}$ &
+    $(\ell_4, v)$ & $\rightarrow$ &
+    $\begin{cases}
+      \delta \ \text{if}\ v(x) \neq 1\\
+      c_4 \ \text{if}\ v(x) = 1
+    \end{cases}$ \\
+    \hline
+  \end{tabular}
+\end{center}
+\end{frame}
+
+\justfor{short}{
+\begin{frame}
+\small
+Remarks:
+\begin{itemize}
+  \item  The (time-optimal) reachability and safety games are decidable for timed games. They are EXPTIME-complete.
+
+  \item Restriction to non-Zeno is still EXPTIME-complete.
+  
+  \item TG can be used to check time bisimilarity
+\end{itemize}
+\end{frame}
+}
+
+\justfor{long}{
+\begin{frame}
+\small
+Remarks:
+\begin{itemize}
+  \item  The (time-optimal) reachability and safety games are decidable for timed games. They are EXPTIME-complete.
+
+  {\color{blue}For reachability as well as safety games, it is sufficient to consider memoryless strategies! Exponential time essentially comes from the region abstraction.}
+
+  \item Restriction to non-Zeno is still EXPTIME-complete.
+  
+  \item TG can be used to check time bisimilarity in a TA with a simple construction
+\end{itemize}
+\end{frame}
+}
+
+\justfor{long}{
+\section{Ongoing challenges}
+\begin{frame}
+  \frametitle{Ongoing challenges}
+  \begin{itemize}
+    \item Robustness and implementability: reconcile the semantics of TA with the models they represent
+    \item Statistical model checking: stocastic TA
+    \item Timed Games: extensions, e.g. where the players have their own objectives
+  \end{itemize}
+\end{frame}
+}
+
+\nocite{AlurDill}
 \section{References}
 \begin{frame}{References}
   \setbeamertemplate{bibliography item}{\insertbiblabel}
